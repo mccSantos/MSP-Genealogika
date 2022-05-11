@@ -1,12 +1,13 @@
 {
-  "name": "MSP-Genealogika",
+  "name": "msp-genealogika",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/mccSantos/MSP-Genealogika.git",
   "author": "Miguel Santos <miguel.c.csantos@sapo.pt>",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --exit-child src/app.ts"
+    "dev": "ts-node-dev --exit-child src/app.ts",
+    "start:debug": "ts-node-dev --inspect-brk=5858 src/app.ts"
   },
   "dependencies": {
     "@prisma/client": "^3.14.0",
