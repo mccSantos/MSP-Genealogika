@@ -1,0 +1,32 @@
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  height: 50vh;
+}
+
+form {
+  align-items: center;
+  text-align: -webkit-center;
+  justify-content: flex-start;
+  height: 30vh;
+  width: 100%;
+}
+
+.label {
+  color: white;
+}
+
+input {
+  border: 3px solid #7fb142;
+  border-radius: 25px;
+  font-size: 4vh;
+}
+
+.passwordlabel {
+  margin-top: 10px;
+}
+
+.buttonsubmit {
+  margin-top: 10px;
+}
