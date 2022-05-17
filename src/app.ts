@@ -1,12 +1,29 @@
 import express, { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import http from "http";
+import { Server } from "socket.io";
+import cors from "cors";
+import { router } from "./routes";
 
 const app = express();
 app.use(express.json());
+app.use(router);
+app.use(cors());
+const serverHttp = http.createServer(app);
+
+const io = new Server(serverHttp, {
+  cors: {
+    origin: "*",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log(`User connected to socket ${socket.id}`);
+});
 
 const prisma = new PrismaClient();
 
-app.post("/register", async (req: Request, res: Response) => {
+/*app.post("/register", async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
   //tentar encriptar a password
   const user = await prisma.user.create({
@@ -17,7 +34,7 @@ app.post("/register", async (req: Request, res: Response) => {
     },
   });
   res.json(user);
-});
+});*/
 
 app.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -47,4 +64,4 @@ app.get("/", async (req, res) => {
   res.send("ola");
 });
 
-app.listen(4000, () => console.log("Server is running on port 4000."));
+export { serverHttp, io };
