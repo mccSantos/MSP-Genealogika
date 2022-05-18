@@ -1,8 +1,15 @@
 import styles from "./styles.module.scss";
 import logo from "../../assets/Genealogika_logo.png";
 import Button from "react-bootstrap/button";
+import { useNavigate } from "react-router-dom";
 
 export function Login() {
+  const navigate = useNavigate();
+
+  const navigateRegister = () => {
+    navigate("/register");
+  };
+
   return (
     <div className={styles.background}>
       <div className={styles.formdiv}>
@@ -23,11 +30,12 @@ export function Login() {
             <div className={styles.buttonGroup}>
               <Button
                 style={{ float: "left", paddingLeft: "0px" }}
-                type="submit"
+                type="button"
                 variant="link"
                 className={styles.buttonsubmit}
+                onClick={navigateRegister}
               >
-                Forgot your password?
+                Don't have an account? Register.
               </Button>
 
               <Button

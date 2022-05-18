@@ -6,11 +6,11 @@ import cors from "cors";
 import { router } from "./routes";
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(router);
-app.use(cors());
-const serverHttp = http.createServer(app);
 
+const serverHttp = http.createServer(app);
 const io = new Server(serverHttp, {
   cors: {
     origin: "*",
@@ -22,19 +22,6 @@ io.on("connection", (socket) => {
 });
 
 const prisma = new PrismaClient();
-
-/*app.post("/register", async (req: Request, res: Response) => {
-  const { name, email, password } = req.body;
-  //tentar encriptar a password
-  const user = await prisma.user.create({
-    data: {
-      name: name,
-      email: email,
-      password: password,
-    },
-  });
-  res.json(user);
-});*/
 
 app.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -58,10 +45,6 @@ app.get("/searchbyperson", async (req: Request, res: Response) => {
   });
 
   res.json(users);
-});
-
-app.get("/", async (req, res) => {
-  res.send("ola");
 });
 
 export { serverHttp, io };
