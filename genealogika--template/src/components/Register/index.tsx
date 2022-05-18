@@ -14,6 +14,7 @@ export function Register() {
               <br />
               <input type="text" id="name" name="name" />
             </div>
+            <br />
             <div className={[styles.label, styles.passwordlabel].join(" ")}>
               Email
               <br />
