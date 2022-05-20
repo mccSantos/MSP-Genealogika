@@ -5,6 +5,7 @@ import styles from "./App.module.scss";
 import { Login } from "./components/Login";
 import { Register } from "./components/Register";
 import {Home} from "./components/Home";
+import {Forum} from "./components/Forum";
 
 export function App() {
   return (
@@ -13,6 +14,7 @@ export function App() {
         <main className={styles.contentWrapper}>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/forum" element={<Forum />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>

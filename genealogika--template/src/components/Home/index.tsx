@@ -13,8 +13,8 @@ export function Home(){
             <div className={styles.navbar}>
             
             <a href="/" ><img src={logo} alt="Genealogika" /></a>
-            <a href="#">Link</a>
-            <a href="Help">Link</a>
+            <a href="Forum">Forum</a>
+            <a href="Help">Help</a>
             <a href="Login" className="right">Login</a>
             </div>
   
