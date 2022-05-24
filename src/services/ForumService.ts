@@ -1,12 +1,12 @@
 import prismaClient from "../prisma";
 
 class ForumService {
-  async execute(subject: string, content: string, user: User) {
-    const ticket = await prismaClient.tickets.create({
+  async execute(subject: string, content: string, user_id: string) {
+    const ticket = await prismaClient.ticket.create({
       data: {
         subject: subject,
         content: content,
-        user: user,
+        user_id: user_id,
       },
     });
 

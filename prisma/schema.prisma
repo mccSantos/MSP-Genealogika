@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  
+
 }
 
 datasource db {
@@ -14,7 +14,7 @@ model User {
   email    String @unique
   password String
 
-  tickets Ticket[]
+  Ticket Ticket[]
   @@map("users")
 }
 
@@ -24,8 +24,8 @@ model Ticket {
   content    String
   created_at DateTime @default(now())
 
+
   user    User   @relation(fields: [user_id], references: [id])
   user_id String
-
   @@map("tickets")
 }
