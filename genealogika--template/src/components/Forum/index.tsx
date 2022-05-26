@@ -10,7 +10,7 @@ import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/button";
 
 import { api } from "../../services/api";
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import io from "socket.io-client";
 
 type Ticket = {
@@ -29,8 +29,15 @@ socket.on("new_ticket", (newTicket) => {
 });
 
 export function Forum() {
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [subject, setSubject] = useState("");
   //const [user, setUser] = useState("");
+
+  useEffect(() => {
+    api.get<Ticket[]>("tickets").then((response) => {
+      setTickets(response.data);
+    });
+  });
 
   async function handleSearch(event: FormEvent) {
     if (!subject.trim()) return;
@@ -60,7 +67,17 @@ export function Forum() {
           </Form>
         </Container>
       </Navbar>
-      <div></div>
+      <div>
+        <ul>
+          {tickets.map((ticket) => {
+            return (
+              <li key={ticket.id}>
+                {ticket.user.name} - {ticket.subject} - {ticket.content}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 }

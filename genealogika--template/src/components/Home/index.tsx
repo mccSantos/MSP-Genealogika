@@ -13,7 +13,7 @@ export function Home() {
       </a>
       <a href="Forum">Forum</a>
       <a href="Help">Help</a>
-      <a href="Login" className="right">
+      <a href="Login" className={styles.right}>
         Login
       </a>
     </div>
