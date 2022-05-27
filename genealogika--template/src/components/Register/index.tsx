@@ -14,6 +14,7 @@ export function Register() {
     if (!name.trim() || !email.trim() || !password.trim()) {
       return;
     }
+
     if (password !== passwordConfirmation) {
       alert("Passwords don't match");
     }

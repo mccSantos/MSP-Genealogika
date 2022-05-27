@@ -29,3 +29,8 @@ model Ticket {
   user_id String
   @@map("tickets")
 }
+
+model Token {
+  token   String @id
+  user_id String
+}

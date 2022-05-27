@@ -11,7 +11,7 @@ import Button from "react-bootstrap/button";
 
 import { api } from "../../services/api";
 import { useState, FormEvent, useEffect } from "react";
-import io from "socket.io-client";
+//import io from "socket.io-client";
 
 type Ticket = {
   id: string;
@@ -22,20 +22,33 @@ type Ticket = {
   };
 };
 
-const socket = io("http://localhost:4000");
+//const socket = io("http://localhost:4000");
 
-socket.on("new_ticket", (newTicket) => {
-  console.log(newTicket);
-});
+//socket.on("new_ticket", (newTicket) => {
+// console.log(newTicket);
+//});
 
 export function Forum() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [subject, setSubject] = useState("");
   //const [user, setUser] = useState("");
-
   useEffect(() => {
+    /*api
+      .post(
+        "login",
+        {
+          email: "user1@email.email",
+          password: "pwd",
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      )
+      .then(() => {*/
     api.get<Ticket[]>("tickets").then((response) => {
       setTickets(response.data);
+      //});
     });
   });
 
