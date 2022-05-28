@@ -4,14 +4,9 @@ import Button from "react-bootstrap/button";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Navbar from "react-bootstrap/Navbar";
-import logo from "../../assets/Genealogika_logo.png";
-import styles from "./styles.module.scss";
-import Popover from 'react-bootstrap/Popover';
+import Popover from '@mui/material/Popover';
 import { Box, Stack } from "@chakra-ui/layout";
 import dynamic from "next/dynamic";
-import NodeModal from "../components/NodeModal";
-import Overlay from 'react-bootstrap/Overlay'
-import { api } from "../../services/api";
 
 
 type Node = {
@@ -52,22 +47,63 @@ export function bfs(id: string,tree: Node | Node[],node: Node) {
         }
     }
 }
-  
+function MyForm() {
+  const [content, setContent] = useState("");
+  return (
+    <form>
+      <label>Enter your Name:
+        <input
+          type="text" 
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
+      </label>
+      <label>Enter your father:
+        <input
+          type="text" 
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
+      </label>
+      <label>Enter your father:
+        <input
+          type="text" 
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+        />
+      </label>
+    </form>
+  )
+}
+
 export default function Home() {
-      
-    const [show, setShow] = useState(false);
-    const [target, setTarget] = useState(null);
-    const ref = useRef(null);
+    const [pop, setPop] = useState<HTMLButtonElement | null>(null);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setPop(event.currentTarget);
+    };
+    const handleClose = () => {
+        setPop(null);
+    };
 
     const [tree, setTree] = useState<Node | Node[]>([]);
     const [node, setNode] = useState<Node | undefined>();
   
     const close = () => setNode(undefined);
   
-    const handleNodeClick = (event) => {
-        setShow(!show);
-        setTarget(event.target);
-    };
+
+
+    /*const popover = (
+        <Popover id="popover-basic">
+          <Popover.Header as="h3">Popover right</Popover.Header>
+          <Popover.Body>
+            And here's some <strong>amazing</strong> content. It's very engaging.
+            right?
+          </Popover.Body>
+        </Popover>
+    );*/
+
+    
   
     const handleSubmit = (familyMemberName: string) => {
       /*const newTree = bfs(node.content, tree, {
@@ -85,31 +121,27 @@ export default function Home() {
       setNode(undefined);*/
       //usar api.get ||
     };
-    const popover = (
-        <Popover id="popover-basic">
-          <Popover.Header as="h3">Popover right</Popover.Header>
-          <Popover.Body>
-            And here's some <strong>amazing</strong> content. It's very engaging.
-            right?
-          </Popover.Body>
-        </Popover>
-      );
-  
+    
+    const open = Boolean(pop);
+    const id = open ? 'simple-popover' : undefined;
     const renderNewNode = ( click: (datum: Node) => void ) => {
-      return (
-        <g>
-            <circle r="15" fill={"#777"} onClick={() => click()} />
-            <Overlay show={show} target={target} placement="bottom" container={ref} containerPadding={20}>
-                <Popover id="popover-contained">
-                    <Popover.Header as="h3">Popover bottom</Popover.Header>
-                    <Popover.Body>
-                        <strong>Holy guacamole!</strong> Check this info.
-                    </Popover.Body>
-                </Popover>
-            </Overlay>
-          
-        </g>
-      );
+        return (
+            <g>
+                <circle aria-describedby={id} r="15" fill={"#777"} onClick={() => handleClick} />
+                <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={pop}
+                    onClose={handleClose}
+                    anchorOrigin={{ 
+                        vertical: 'bottom', 
+                        horizontal: 'left',
+                    }}
+                >   
+                    <Button size ='sm' > </Button>
+                </Popover>    
+            </g>
+        );
     };
     
     return (
@@ -118,19 +150,12 @@ export default function Home() {
           <Tree
             data={tree}
             zoomable={true}
-            onNodeClick={handleNodeClick}
+            onNodeClick={handleClick}
             translate={{
               x: 200,
               y: 200,
             }}
-            renderCustomNodeElement={(nodeInfo) =>
-              renderRectSvgNode(nodeInfo, handleNodeClick)
-            }
-          />
-          <NodeModal
-            onSubmit={(familyMemberName) => handleSubmit(familyMemberName)}
-            onClose={close}
-            isOpen={Boolean(node)}
+            renderCustomNodeElement={(nodeInfo) => renderNewNode(nodeInfo) }
           />
         </Box>
       </Stack>
@@ -138,27 +163,29 @@ export default function Home() {
 }
   
 
-  export function TreeHome() {
-  
-    return (
-        <div>
-            <Navbar bg="light" expand="lg" sticky = "top">
-                <Navbar.Brand href="/">
-                    Home
-                </Navbar.Brand>
-                <Form className="d-flex">
-                    <FormControl
-                    type="search"
-                    placeholder="Search"
-                    className="me-2"
-                    aria-label="Search"   
-                    />
-                    <Button type="submit" variant="outline-success">
-                    Search
-                    </Button>
-                </Form>
-          </Navbar>
-        </div>
-    );
-  }
+    export function TreeHome() {
+    
+        return (
+            <div>
+                <Navbar bg="light" expand="lg" sticky = "top">
+                    <Navbar.Brand href="/">
+                        Home
+                    </Navbar.Brand>
+                    <Form className="d-flex">
+                        <FormControl
+                        type="search"
+                        placeholder="Search"
+                        className="me-2"
+                        aria-label="Search"   
+                        />
+                        <Button type="submit" variant="outline-success">
+                        Search
+                        </Button>
+                    </Form>
+                    <Button type= "button" value="Add Person"/>
+            </Navbar>
+            </div>
+        );
+    }
+
       

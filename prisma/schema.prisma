@@ -34,3 +34,12 @@ model Token {
   token   String @id
   user_id String
 }
+
+model Node{
+  id      String   @id @default(uuid())
+  name String
+
+  childrens Node[] 
+  @@map("node")
+
+}
