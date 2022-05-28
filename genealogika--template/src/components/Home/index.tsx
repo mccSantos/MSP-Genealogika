@@ -11,6 +11,7 @@ export function Home() {
       <a href="/">
         <img src={logo} alt="Genealogika" />
       </a>
+      <a href="Tree">Tree</a>
       <a href="Forum">Forum</a>
       <a href="Help">Help</a>
       <a href="Login" className={styles.right}>

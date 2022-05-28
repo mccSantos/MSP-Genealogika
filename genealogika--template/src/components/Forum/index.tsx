@@ -57,6 +57,7 @@ export function Forum() {
 
     await api.get("tickets-by-subject", {});
   }
+  
   return (
     <div>
       <Navbar bg="light" expand="lg">
