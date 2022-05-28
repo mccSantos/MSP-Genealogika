@@ -35,11 +35,15 @@ model Token {
   user_id String
 }
 
-model Node{
-  id      String   @id @default(uuid())
+model Node {
+  id   String @id @default(uuid())
   name String
 
-  childrens Node[] 
-  @@map("node")
+  Link Link[]
+}
 
+model Link {
+  id      String @id @default(uuid())
+  child   Node   @relation(fields: [childId], references: [id])
+  childId String
 }

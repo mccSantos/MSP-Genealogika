@@ -8,18 +8,10 @@ class NodeCreateService {
       data: {
         name: name,
       },
-      include: {
-        node: true,
-      },
     });
 
     const infoWS = {
-      
       content: node.name,
-      user_id: ticket.user_id,
-      user: {
-        name: ticket.user.name,
-      },
     };
 
     io.emit("new_Node", infoWS);

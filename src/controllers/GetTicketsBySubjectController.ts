@@ -3,7 +3,7 @@ import { GetTicketsBySubjectService } from "../services/GetTicketsBySubjectServi
 
 class GetTicketsBySubjectController {
   async handle(req: Request, res: Response) {
-    const subject = req.body;
+    const { subject } = req.body;
     const service = new GetTicketsBySubjectService();
 
     const result = await service.execute(subject);

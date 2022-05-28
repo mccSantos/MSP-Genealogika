@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { NodeCreateService } from "../services/NodeCreateService";
 
-class NodeController {
+class NodeAddController {
   async handle(req: Request, res: Response) {
     const { name } = req.body;
 
@@ -13,4 +13,4 @@ class NodeController {
   }
 }
 
-export { NodeController };
+export { NodeAddController };
