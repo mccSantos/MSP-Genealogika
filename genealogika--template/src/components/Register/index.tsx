@@ -25,7 +25,7 @@ export function Register() {
   return (
     <div className={styles.background}>
       <div className={styles.formdiv}>
-        <img src={logo} alt="Genealogika" />
+        <img src={logo} alt="Genealogika" className={styles.logo} />
         <div>
           <form
             action="http://localhost:3000/"

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ForumController } from "./controllers/ForumController";
+import { GetNodeController } from "./controllers/GetNodeController";
 import { GetTicketsBySubjectController } from "./controllers/GetTicketsBySubjectController";
 import { GetTicketsController } from "./controllers/GetTicketsController";
 import { GetUserIdFromTokenController } from "./controllers/GetUserIdFromTokenController";
@@ -25,5 +26,9 @@ router.get("/tickets-by-subject", new GetTicketsBySubjectController().handle);
 router.post("/create-node", new NodeAddController().handle);
 
 router.get("/id-from-token", new GetUserIdFromTokenController().handle);
+
+router.get("/get-nodes", new GetNodeController().handle);
+
+router.get("/validate-token", validateToken);
 
 export { router };

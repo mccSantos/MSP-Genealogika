@@ -5,12 +5,17 @@ import { Server } from "socket.io";
 import cors from "cors";
 import { router } from "./routes";
 import cookieParser from "cookie-parser";
+import { SendEmailService } from "./services/SendEmailService";
 
 var corsOptions = {
   origin: "http://localhost:3000",
   optionsSuccessStatus: 200,
   credentials: true,
 };
+
+const service = new SendEmailService();
+
+service.execute("ta.ventura@campus.fct.unl.pt", "teste", "teste body");
 
 const app = express();
 app.use(cors(corsOptions));

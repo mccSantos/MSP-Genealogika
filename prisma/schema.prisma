@@ -39,11 +39,14 @@ model Node {
   id   String @id @default(uuid())
   name String
 
-  Link Link[]
+  parents  Node[] @relation("FamilyLink", references: [id])
+  children Node[] @relation("FamilyLink", references: [id])
 }
 
-model Link {
-  id      String @id @default(uuid())
-  child   Node   @relation(fields: [childId], references: [id])
-  childId String
-}
+//model Link {
+//  id       String @id @default(uuid())
+// child    Node   @relation("Link", fields: [childId], references: [id])
+//  childId  String
+//  parent   Node   @relation("Link", fields: [parentId], references: [id])
+// parentId String
+//}

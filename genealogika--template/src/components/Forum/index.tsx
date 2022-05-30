@@ -11,6 +11,7 @@ import Button from "react-bootstrap/button";
 
 import { api } from "../../services/api";
 import { useState, FormEvent, useEffect } from "react";
+
 //import io from "socket.io-client";
 
 type Ticket = {
@@ -29,6 +30,11 @@ type Ticket = {
 //});
 
 export function Forum() {
+  const navigate = useNavigate();
+
+  const navigateTicketForm = () => {
+    navigate("/");
+  };
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [subject, setSubject] = useState("");
   //const [user, setUser] = useState("");
@@ -46,10 +52,18 @@ export function Forum() {
         }
       )
       .then(() => {*/
-    api.get<Ticket[]>("tickets").then((response) => {
-      setTickets(response.data);
-      //});
-    });
+    api
+      .get<Ticket[]>("tickets")
+      .then((response) => {
+        setTickets(response.data);
+        //});
+      })
+      .catch((error) => {
+        console.log(error.response.status);
+        if (error.response.status == 401) {
+          alert("Sem cookie");
+        }
+      });
   });
 
   async function handleSearch(event: FormEvent) {
@@ -57,7 +71,7 @@ export function Forum() {
 
     await api.get("tickets-by-subject", {});
   }
-  
+
   return (
     <div>
       <Navbar bg="light" expand="lg">
@@ -75,17 +89,25 @@ export function Forum() {
               onChange={(event) => setSubject(event.target.value)}
               value={subject}
             />
-            <Button type="submit" variant="outline-success">
+            <Button type="submit" variant="success" className={styles.btn}>
               Search
             </Button>
           </Form>
+          <Button
+            type="button"
+            onClick={navigateTicketForm}
+            variant="outline-success"
+            className={styles.btn}
+          >
+            Help?
+          </Button>
         </Container>
       </Navbar>
       <div>
         <ul>
           {tickets.map((ticket) => {
             return (
-              <li key={ticket.id}>
+              <li key={ticket.id} className={styles.listItem}>
                 {ticket.user.name} - {ticket.subject} - {ticket.content}
               </li>
             );

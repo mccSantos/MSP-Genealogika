@@ -16,6 +16,7 @@ export function Login() {
   const [password, setPassword] = useState("");
 
   async function handleLogin(event: FormEvent) {
+    event.preventDefault();
     await api.post(
       "login",
       {
@@ -27,12 +28,13 @@ export function Login() {
         withCredentials: true,
       }*/
     );
+    navigate("/");
   }
 
   return (
     <div className={styles.background}>
       <div className={styles.formdiv}>
-        <img src={logo} alt="Genealogika" />
+        <img src={logo} alt="Genealogika" className={styles.logo} />
         <div>
           <form
             className={styles.container}
