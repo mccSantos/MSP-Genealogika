@@ -7,46 +7,26 @@ import Navbar from "react-bootstrap/Navbar";
 import Popover from "@mui/material/Popover";
 import { Box, Stack } from "@chakra-ui/layout";
 import dynamic from "next/dynamic";
+import React from 'react';
+import Tree from 'react-tree-graph';
+import 'react-tree-graph/dist/style.css';
+import ReactFamilyTree from "react-family-tree";
+import PersonNode from "./PersonNode";
+import "./index.css";
 
-/*type Node = {
+const WIDTH = 280;
+const HEIGHT = 125;
+
+
+type Node = {
   id: string;
-  content: string;
-  father: {
-    id: string;
-  };
-  mother: {
-    id: string;
-  };
-  //childrens???
+  name: string;
+  parents: Node[];
   children: Node[];
 };
+let people =[];
 
-const Tree = dynamic(() => import("react-d3-tree"), {
-  ssr: false,
-});
-
-export function bfs(id: string, tree: Node | Node[], node: Node) {
-  const queue: Node[] = [];
-
-  queue.unshift(tree as Node);
-
-  while (queue.length > 0) {
-    const curNode = queue.pop();
-
-    if (curNode.id === id) {
-      curNode.children.push(node);
-
-      return { ...tree };
-    }
-
-    const len = curNode.children.length;
-
-    for (let i = 0; i < len; i++) {
-      queue.unshift(curNode.children[i]);
-    }
-  }
-}
-function MyForm() {
+/*function MyForm() {
   const [content, setContent] = useState("");
   return (
     <form>
@@ -76,53 +56,58 @@ function MyForm() {
       </label>
     </form>
   );
-}
+}*/
 
-export default function Home() {
-  const [pop, setPop] = useState<HTMLButtonElement | null>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+
+export default function processNodes() {
+  //const [pop, setPop] = useState<HTMLButtonElement | null>(null);
+
+ /* const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setPop(event.currentTarget);
   };
   const handleClose = () => {
     setPop(null);
-  };
+  };*/
 
-  const [tree, setTree] = useState<Node | Node[]>([]);
-  const [node, setNode] = useState<Node | undefined>();
-
-  const close = () => setNode(undefined);
-
-  /*const popover = (
-        <Popover id="popover-basic">
-          <Popover.Header as="h3">Popover right</Popover.Header>
-          <Popover.Body>
-            And here's some <strong>amazing</strong> content. It's very engaging.
-            right?
-          </Popover.Body>
-        </Popover>
-    );
-
-  const handleSubmit = (familyMemberName: string) => {
-    /*const newTree = bfs(node.content, tree, {
-        name: familyMemberName,
-        attributes: {
-          id: v4(),
-        },
-        children: [],
-      });
+  const [tree, setTree] = useState<Node[]>([]);
   
-      if (newTree) {
-        setTree(newTree);
+  useEffect(() => {
+    api.get<Node[]>("Node")
+    .then((response) => {
+        setTree(response.data);
+    }).catch((error) => {
+      console.log(error.response.status);
+      if (error.response.status == 401) {
+        alert("Sem cookie");
       }
-  
-      setNode(undefined);
-    //usar api.get ||
-  };
+    });
+  });
 
-  const open = Boolean(pop);
+  function buildTreeNode(idNode: String,nameNode: String){
+    var node = {
+      id: idNode,
+      name: nameNode,
+      childrens: []
+    };
+    return node;
+  }
+
+  for(var i = 0; i < tree.length; i++){
+    if(tree[i].parents == []){
+      var newNode = buildTreeNode(tree[i].id,tree[i].name);
+      people.push(newNode);
+    }
+  }
+
+
+
+  
+
+
+  /*const open = Boolean(pop);
   const id = open ? "simple-popover" : undefined;
-  const renderNewNode = (click: (datum: Node) => void) => {
+  /*const renderNewNode = (click: (datum: Node) => void) => {
     return (
       <g>
         <circle
@@ -162,10 +147,11 @@ export default function Home() {
         />
       </Box>
     </Stack>
-  );
+  );*/
 }
-*/
+
 export function TreeHome() {
+  const [rootId, setRootId] = useState(people[0].id);
   return (
     <div>
       <Navbar bg="light" expand="lg" sticky="top">
@@ -183,6 +169,34 @@ export function TreeHome() {
         </Form>
         <Button type="button" value="Add Person" />
       </Navbar>
+      <div>
+        <ReactFamilyTree
+          nodes={people}
+          rootId={rootId}
+          width={WIDTH}
+          height={HEIGHT}
+          renderNode={(node) => (
+            <PersonNode
+              key={node.id}
+              id={node.id}
+              gender={node.gender}
+              node={node}
+              onSubClick={setRootId}
+              style={{
+                width: WIDTH,
+                height: HEIGHT,
+                // padding: HEIGHT * 0.1,
+                transform: `translate(${node.left * (WIDTH / 2)}px, ${
+                  node.top * (HEIGHT / 2)
+                }px)`
+              }}
+            />
+          )}
+        />
+      </div>
+  
     </div>
+   
+    
   );
 }

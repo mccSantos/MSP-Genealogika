@@ -104,16 +104,26 @@ export function Forum() {
         </Container>
       </Navbar>
       <div>
-        <ul>
-          {tickets.map((ticket) => {
+        <table >
+          <tr>
+            <th>id</th>
+            <th>Name</th>
+            <th>Subject</th>
+            <th>Content</th>
+          </tr>
+          {tickets.map((val,key) => {
             return (
-              <li key={ticket.id} className={styles.listItem}>
-                {ticket.user.name} - {ticket.subject} - {ticket.content}
-              </li>
+              <tr key={key} >
+                <td>{val.id}</td>
+                <td>{val.user.name}</td>
+                <td>{val.subject}</td>
+                <td>{val.content}</td>
+              </tr>
             );
           })}
-        </ul>
+        </table>
       </div>
     </div>
   );
 }
+
