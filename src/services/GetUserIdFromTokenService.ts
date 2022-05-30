@@ -8,6 +8,9 @@ class GetUserIdFromTokenService {
           equals: token,
         },
       },
+      orderBy: {
+        created_at: "desc",
+      },
     });
 
     return tokenFound.user_id;

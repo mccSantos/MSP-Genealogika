@@ -50,6 +50,7 @@ export function Login() {
                 name="email"
                 onChange={(event) => setEmail(event.target.value)}
                 value={email}
+                className={styles.input}
               />
             </div>
             <br></br>
@@ -62,6 +63,7 @@ export function Login() {
                 name="password"
                 onChange={(event) => setPassword(event.target.value)}
                 value={password}
+                className={styles.input}
               />
             </div>
             <div className={styles.buttonGroup}>

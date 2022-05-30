@@ -5,12 +5,12 @@
   height: 50vh;
 }
 
-form {
-  align-items: center;
-  text-align: -webkit-center;
-  justify-content: flex-start;
-  height: 30vh;
-  width: 100%;
+.input {
+  border: 3px solid #7fb142;
+  border-radius: 10px;
+  font-size: 2vh;
+  width: 30vw;
+  height: 6vh;
 }
 
 .label {

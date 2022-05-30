@@ -13,9 +13,9 @@ var corsOptions = {
   credentials: true,
 };
 
-const service = new SendEmailService();
+//const service = new SendEmailService();
 
-service.execute("ta.ventura@campus.fct.unl.pt", "teste", "teste body");
+//service.execute("ta.ventura@campus.fct.unl.pt", "teste", "teste body");
 
 const app = express();
 app.use(cors(corsOptions));

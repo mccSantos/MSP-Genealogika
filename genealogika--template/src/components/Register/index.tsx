@@ -11,6 +11,7 @@ export function Register() {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
   async function handleRegister(event: FormEvent) {
+    event.preventDefault();
     if (!name.trim() || !email.trim() || !password.trim()) {
       return;
     }
@@ -41,6 +42,7 @@ export function Register() {
                 name="name"
                 onChange={(event) => setName(event.target.value)}
                 value={name}
+                className={styles.input}
               />
             </div>
             <br />
@@ -53,6 +55,7 @@ export function Register() {
                 name="email"
                 onChange={(event) => setEmail(event.target.value)}
                 value={email}
+                className={styles.input}
               />
             </div>
             <br></br>
@@ -65,6 +68,7 @@ export function Register() {
                 name="password"
                 onChange={(event) => setPassword(event.target.value)}
                 value={password}
+                className={styles.input}
               />
             </div>
             <br></br>
@@ -79,6 +83,7 @@ export function Register() {
                   setPasswordConfirmation(event.target.value)
                 }
                 value={passwordConfirmation}
+                className={styles.input}
               />
             </div>
             <div className={styles.buttonGroup}>

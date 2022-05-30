@@ -17,11 +17,12 @@ form {
   color: white;
 }
 
-input {
+.input {
   border: 3px solid #7fb142;
-  border-radius: 25px;
-  font-size: 4vh;
+  border-radius: 10px;
+  font-size: 2vh;
   width: 30vw;
+  height: 6vh;
 }
 
 .passwordlabel {

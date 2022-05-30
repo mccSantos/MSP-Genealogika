@@ -7,6 +7,7 @@ import { Register } from "./components/Register";
 import { Home } from "./components/Home";
 import { Forum } from "./components/Forum";
 import { TreeHome } from "./components/Tree";
+import { TimeCapsule } from "./components/TimeCapsule";
 
 export function App() {
   return (
@@ -19,6 +20,7 @@ export function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/tree" element={<TreeHome />} />
+            <Route path="/timecapsule" element={<TimeCapsule />} />
           </Routes>
         </main>
       </div>
