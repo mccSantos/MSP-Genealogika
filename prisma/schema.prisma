@@ -31,8 +31,9 @@ model Ticket {
 }
 
 model Token {
-  token   String @id
-  user_id String
+  token      String   @id
+  user_id    String
+  created_at DateTime @default(now())
 }
 
 model Node {

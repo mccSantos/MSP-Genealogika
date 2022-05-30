@@ -41,6 +41,7 @@ export function Home() {
       <a href="Tree">Tree</a>
       <a href="Forum">Forum</a>
       <a href="Help">Help</a>
+      <a href="TimeCapsule">Cápsula do Tempo</a>
       <a
         href="Login"
         className={styles.right}
