@@ -5,6 +5,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import {Modal } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/button";
@@ -35,23 +36,16 @@ export function Forum() {
   const navigateTicketForm = () => {
     navigate("/");
   };
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const[newTicket, setNewTicket] = useState("");
+  const[content, setNewContent] = useState("");
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [subject, setSubject] = useState("");
-  //const [user, setUser] = useState("");
+  const [user, setUser] = useState("");
   useEffect(() => {
-    /*api
-      .post(
-        "login",
-        {
-          email: "user1@email.email",
-          password: "pwd",
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      )
-      .then(() => {*/
+    getId();
     api
       .get<Ticket[]>("tickets")
       .then((response) => {
@@ -66,14 +60,66 @@ export function Forum() {
       });
   });
 
+  async function getId(){
+    await api.get("id-from-token").then((response) => {
+      setUser(response.data);
+    });
+  }
+
   async function handleSearch(event: FormEvent) {
+    getId();
     if (!subject.trim()) return;
 
     await api.get("tickets-by-subject", {});
   }
 
+  async function handleAddTicket(event: FormEvent){
+    if (!newTicket.trim() || !content.trim()) return;
+    
+    await api.post("create-ticket",{newTicket,content,user});
+    handleClose;
+  }
+
+
   return (
     <div>
+      <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Adding a new Person to the Tree</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label>Subject</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Assunto"
+                  autoFocus
+                  onChange = {(event) => setNewTicket(event.target.value)}
+                />
+              </Form.Group>
+            </Form>
+            <Form>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label>Content</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Conteudo"
+                  autoFocus
+                  onChange = {(event) => setNewContent(event.target.value)}
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleAddTicket }>
+              Add Ticket
+            </Button>
+          </Modal.Footer>
+        </Modal>
       <Navbar bg="light" expand="lg">
         <Container fluid>
           <Navbar.Brand href="/">Home</Navbar.Brand>
@@ -95,7 +141,7 @@ export function Forum() {
           </Form>
           <Button
             type="button"
-            onClick={navigateTicketForm}
+            onClick={handleShow}
             variant="outline-success"
             className={styles.btn}
           >

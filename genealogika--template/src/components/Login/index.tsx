@@ -29,7 +29,7 @@ export function Login() {
       }*/
     );
     navigate("/");
-  }
+  };
 
   return (
     <div className={styles.background}>

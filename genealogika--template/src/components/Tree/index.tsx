@@ -1,5 +1,5 @@
 import { api } from "../../services/api";
-import { useState, useEffect } from "react";
+import { useState, useEffect,FormEvent } from "react";
 import Button from "react-bootstrap/button";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
@@ -39,6 +39,7 @@ export function TreeHome() {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const[newNode, setNewNode] = useState("");
   function processNodes() {
   
     const [tree, setTree] = useState<NodeDB[]>([]);
@@ -115,6 +116,17 @@ export function TreeHome() {
       }
     }
   };
+
+  async function CreateNewNode(event: FormEvent){
+
+    event.preventDefault();
+    if (!newNode.trim()) {
+      return;
+
+    }
+      await api.post("create-node", { newNode });
+      handleClose;
+  }
   /*const config = {
     pageFitMode: PageFitMode.FitToPage,
     cursorItem: 2,
@@ -205,6 +217,7 @@ export function TreeHome() {
                   type="text"
                   placeholder="name"
                   autoFocus
+                  onChange = {(event) => setNewNode(event.target.value)}
                 />
               </Form.Group>
             </Form>
@@ -213,7 +226,7 @@ export function TreeHome() {
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleClose}>
+            <Button variant="primary" onClick={CreateNewNode}>
               Add New Person
             </Button>
           </Modal.Footer>
