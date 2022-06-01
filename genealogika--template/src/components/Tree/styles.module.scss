@@ -11,17 +11,18 @@ form {
 }
 
 /*CSS*/
-html, body{
+html,
+body {
   width: 100%;
   height: 100%;
   padding: 0;
-  margin:0;
+  margin: 0;
   overflow: hidden;
   font-family: Helvetica;
 }
-#tree{
-  width:100%;
-  height:100%;
+#tree {
+  width: 100%;
+  height: 100%;
 }
 
 input {
@@ -77,8 +78,6 @@ input {
 .navbar {
   overflow: hidden; /* Hide overflow */
   background-color: #333; /* Dark background color */
-
-  
 }
 
 .Navbar .Brand.img {
@@ -106,4 +105,9 @@ input {
 .navbar a:hover {
   background-color: #ddd; /* Grey background color */
   color: black; /* Black text color */
+}
+
+.placeholder {
+  background-color: red;
+  color: white;
 }

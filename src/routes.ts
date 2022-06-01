@@ -27,9 +27,9 @@ router.get("/tickets-by-subject", new GetTicketsBySubjectController().handle);
 
 router.post("/create-node", new NodeAddController().handle);
 
-router.get("/id-from-token", new GetUserIdFromTokenController().handle);
+router.post("/id-from-token", new GetUserIdFromTokenController().handle);
 
-router.get("/get-nodes", new GetNodeController().handle);
+router.get("/nodes", new GetNodeController().handle);
 
 router.get("/validate-token", validateToken);
 
