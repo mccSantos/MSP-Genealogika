@@ -1,14 +1,15 @@
 import { api } from "../../services/api";
-import { useState, FormEvent, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Button from "react-bootstrap/button";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Navbar from "react-bootstrap/Navbar";
 import Popover from "@mui/material/Popover";
-import 'react-tree-graph/dist/style.css';
-import { OrgDiagram, FamDiagram } from basicprimitivesreact;
-import React from 'react';
-import { PageFitMode, Enabled, GroupByType, AdviserPlacementType, AnnotationType, Size, ConnectorShapeType, Colors, LineType, ConnectorPlacementType } from 'basicprimitives';
+import { OrgDiagram, FamDiagram } from "basicprimitivesreact";
+import Container from "react-bootstrap/Container";
+import { PageFitMode, Enabled, GroupByType} from 'basicprimitives';
+import {AdviserPlacementType, AnnotationType, Size} from 'basicprimitives';
+import { ConnectorShapeType, Colors, LineType, ConnectorPlacementType } from 'basicprimitives';
 
 import logo from "../../assets/Genealogika_logo.png";
 import { NavDropdown,Modal } from "react-bootstrap";
@@ -114,8 +115,8 @@ export function TreeHome() {
       }
     }
   };
-  const config = {
-    pageFitMode: PageFitMode.None,
+  /*const config = {
+    pageFitMode: PageFitMode.FitToPage,
     cursorItem: 2,
     linesWidth: 1,
     linesColor: "black",
@@ -124,8 +125,8 @@ export function TreeHome() {
     dotLevelShift: 20,
     lineLevelShift: 20,
     normalItemsInterval: 10,
-    dotItemsInterval: 10,
-    lineItemsInterval: 10,
+    dotItemsInterval: 30,
+    lineItemsInterval: 30,
     arrowsDirection: GroupByType.Parents,
     showExtraArrows: false,
     items: [
@@ -140,12 +141,42 @@ export function TreeHome() {
       { id: 12, parents: [5, 7], title: "John Smith", label: "John Smith", description: "2ns son", image: photos.a },
       { id: 8, parents: [7], title: "Leon Kemp", label: "Leon Kemp", description: "", image: photos.a }
     ]
-  };
+  }; */
+  const config = {
+    pageFitMode: PageFitMode.FitToPage,
+    cursorItem: 0,
+    highlightItem: 0,
+    hasSelectorCheckbox: Enabled.True,
+    items: [
+      {
+        id: 0,
+        parent: null,
+        title: 'James Smith',
+        description: 'VP, Public Sector',
+        image: photos.a
+      },
+      {
+        id: 1,
+        parent: 0,
+        title: 'Ted Lucas',
+        description: 'VP, Human Resources',
+        image: photos.a
+      },
+      {
+        id: 2,
+        parent: 0,
+        title: 'Fritz Stuger',
+        description: 'Business Solutions, US',
+        image: photos.a
+      }
+    ]
+  }; 
 
  
   return (
     <div>
       <Navbar bg="light" expand="lg" sticky="top">
+      <Container fluid>
         <Navbar.Brand href="/">Home</Navbar.Brand>
         <Form className="d-flex">
           <FormControl
@@ -160,15 +191,8 @@ export function TreeHome() {
           </Button >
         </Form>
         <Button type="button"  onClick = {handleShow} variant="success" >Add</Button>
+        </Container>
       </Navbar>
-
-
-      <div className="placeholder">
-    <FamDiagram centerOnCursor={true} config={config} />
-      </div>
-
-
-
       <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Adding a new Person to the Tree</Modal.Title>
@@ -194,7 +218,16 @@ export function TreeHome() {
             </Button>
           </Modal.Footer>
         </Modal>
+
+        <div className="placeholder">
+        <OrgDiagram centerOnCursor={true} config={config} />
+        </div>
+          
+
+
+
     </div>
+    
   );
 }
 

@@ -240,6 +240,19 @@ base64id@2.0.0, base64id@~2.0.0:
   resolved "https://registry.yarnpkg.com/base64id/-/base64id-2.0.0.tgz#2770ac6bc47d312af97a8bf9a634342e0cd25cb6"
   integrity sha512-lGe34o6EHj9y3Kts9R4ZYs/Gr+6N7MCaMlIFA3F1R2O5/m7K06AxfSeO5530PEERE6/WyEg3lsuyw4GHlPZHog==
 
+basicprimitives@6.5.1:
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/basicprimitives/-/basicprimitives-6.5.1.tgz#9cd1a2de50e24497667b1561cac12aff5f776465"
+  integrity sha512-zwHeLl3DfpsLvjTSf2MYqfOSttCvGNGQhYEUVVL4u5lt5FgioCupK0V+B77TNW0uPlkf8hKhif29TvtlrnbFew==
+
+basicprimitivesreact@^6.5.1:
+  version "6.5.1"
+  resolved "https://registry.yarnpkg.com/basicprimitivesreact/-/basicprimitivesreact-6.5.1.tgz#393e7eb01aac20c32755eb1ec61e2daa98342dd3"
+  integrity sha512-QG/RVNfgiVNThyJdHxOKCqYlCiMJbmIKLcISdnrhCe+yCU2v2rT0IC/rDyanztJ0emxfl/W2iqGFyBBq8PAMxw==
+  dependencies:
+    basicprimitives "6.5.1"
+    resize-observer-polyfill "^1.5.1"
+
 binary-extensions@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.2.0.tgz#75f502eeaf9ffde42fc98829645be4ea76bd9e2d"
@@ -1009,6 +1022,11 @@ regenerator-runtime@^0.13.4:
   version "0.13.9"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz#8925742a98ffd90814988d7566ad30ca3b263b52"
   integrity sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==
+
+resize-observer-polyfill@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
 
 resolve@^1.0.0:
   version "1.22.0"
