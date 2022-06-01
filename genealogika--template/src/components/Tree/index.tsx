@@ -5,63 +5,71 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Navbar from "react-bootstrap/Navbar";
 import Popover from "@mui/material/Popover";
-import { Box, Stack } from "@chakra-ui/layout";
-import dynamic from "next/dynamic";
-import React from 'react';
-import Tree from 'react-tree-graph';
 import 'react-tree-graph/dist/style.css';
-import ReactFamilyTree from "react-family-tree";
-import PersonNode from "./PersonNode";
-import "./index.css";
+import { OrgDiagram, FamDiagram } from basicprimitivesreact;
+import React from 'react';
+import { PageFitMode, Enabled, GroupByType, AdviserPlacementType, AnnotationType, Size, ConnectorShapeType, Colors, LineType, ConnectorPlacementType } from 'basicprimitives';
 
-const WIDTH = 280;
-const HEIGHT = 125;
+import logo from "../../assets/Genealogika_logo.png";
+import { NavDropdown,Modal } from "react-bootstrap";
 
-
-type Node = {
+var photos = {
+  a: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAA8CAIAAACrV36WAAAAAXNSR0IArs4c6QAAAARn' + 
+  'QU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGnSURBVGhD7dnBbQJBDAVQk1o2QjlQwKYGzpSwKQfq4IxIC' + 
+  'RTB9jLZHCJFwWv7/7EiDt6zmX2yPYMHNq01eb7n5flI36JiIXWpbFW2kAwgsdVblS0kA0hs9db/ZWs+vW/Wno9PxPE3dh' + 
+  'ls6Od+HI1XT1d64Sb8R5utEulwdbA8VY+LZ/kqkfF456pBHxDz5Xxze/p2vsxukBbAshTVOE0PO4B2cUlWKrgUTKsrV0e' + 
+  'ut3RVU/cm5aKKqPXVbjuIDPtDUh2JImq1+jmjkupIFNFStXadHncWXkecpb3393me4oJZnionXyjLV6W4QFZEleHCWNG+' + 
+  '0eKggQJiRVV6vhAXwoqrul0AC1H1uuIsTLUyukYH1jBL7WJ8lgq6oqwkVXSQDrLSVEFXjJWoirlCrFRVyBVhJasirgCr6' + 
+  '5tEv7a5A5jL0tcN7vNl9OVcHqtXRbocVr+Kc9k3H/3qPL69Ise7dh0SsS+2JmtFddgvdy/gGbY7Jdp2GRcyrlu1BfUjxt' + 
+  'iPRm/lqVbGHOMHnU39zQm0I/UbBLA+GVosJHGVrcoWkgEktnoLydYXkF/LiXG21MwAAAAASUVORK5CYII='
+};
+type NodeDB = {
   id: string;
   name: string;
-  parents: Node[];
-  children: Node[];
+  parents: NodeDB[];
+  children: NodeDB[];
 };
-let people =[];
 
-/*function MyForm() {
-  const [content, setContent] = useState("");
-  return (
-    <form>
-      <label>
-        Enter your Name:
-        <input
-          type="text"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-      </label>
-      <label>
-        Enter your father:
-        <input
-          type="text"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-      </label>
-      <label>
-        Enter your father:
-        <input
-          type="text"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
-      </label>
-    </form>
-  );
-}*/
+let nodes = [];
 
 
+export function TreeHome() {
+  const [search, setSearch] = useState("");
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  function processNodes() {
+  
+    const [tree, setTree] = useState<NodeDB[]>([]);
+  
+    useEffect(() => {
+      api.get<NodeDB[]>("Node")
+      .then((response) => {
+          setTree(response.data);
+      }).catch((error) => {
+        console.log(error.response.status);
+        if (error.response.status == 401) {
+          alert("Sem cookie");
+        }
+      });
+    });
+  
+    for(var i = 0; i < tree.length; i++){
+      var p = tree[i].parents;
+      var parentsResult = [];
+      for(var j = 0; j < p.length; j++){
+        parentsResult.push(p[j].id);
+      }
+      nodes.push({
+        id: tree[i].id,
+        parents: parentsResult,
+        title: tree[i].name,
+        image: logo
+      });
+    }
+  };
 
-export default function processNodes() {
-  //const [pop, setPop] = useState<HTMLButtonElement | null>(null);
+//const [pop, setPop] = useState<HTMLButtonElement | null>(null);
 
  /* const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setPop(event.currentTarget);
@@ -69,89 +77,72 @@ export default function processNodes() {
   const handleClose = () => {
     setPop(null);
   };*/
+  /*<Popover id={id} open={open}  anchorEl={pop} onClose={handleClose} 
+            anchorOrigin={{ vertical: "bottom",horizontal: "left", }} >
+            <Button size="sm"> </Button>
+              </Popover>*/
 
-  const [tree, setTree] = useState<Node[]>([]);
-  
-  useEffect(() => {
-    api.get<Node[]>("Node")
-    .then((response) => {
-        setTree(response.data);
-    }).catch((error) => {
-      console.log(error.response.status);
-      if (error.response.status == 401) {
-        alert("Sem cookie");
+  function SelectNodes(){
+    if(search == ""){
+      processNodes();
+    }else{
+      var newNodes = [];
+      for(var i = 0; i < nodes.length; i++){
+        var node = nodes[i];
+        if(node.title == search){
+          newNodes.push({
+            id: node.id,
+            parents: node.parents,
+            title: node.title,
+            image: logo
+          });
+          var p = node.parents;
+          for(var j = 0; j < p.length;j++){
+            for(var k = 0; k < nodes.length; k++){
+              if(nodes[i].id == p[j]){
+                newNodes.push({
+                  id: nodes[i].id,
+                  parents: nodes[i].parents,
+                  title: nodes[i].title,
+                  image: logo
+                });
+              }
+            }
+          }
+          break;
+        }
       }
-    });
-  });
-
-  function buildTreeNode(idNode: String,nameNode: String){
-    var node = {
-      id: idNode,
-      name: nameNode,
-      childrens: []
-    };
-    return node;
-  }
-
-  for(var i = 0; i < tree.length; i++){
-    if(tree[i].parents == []){
-      var newNode = buildTreeNode(tree[i].id,tree[i].name);
-      people.push(newNode);
     }
-  }
-
-
-
-  
-
-
-  /*const open = Boolean(pop);
-  const id = open ? "simple-popover" : undefined;
-  /*const renderNewNode = (click: (datum: Node) => void) => {
-    return (
-      <g>
-        <circle
-          aria-describedby={id}
-          r="15"
-          fill={"#777"}
-          onClick={() => handleClick}
-        />
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={pop}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-        >
-          <Button size="sm"> </Button>
-        </Popover>
-      </g>
-    );
+  };
+  const config = {
+    pageFitMode: PageFitMode.None,
+    cursorItem: 2,
+    linesWidth: 1,
+    linesColor: "black",
+    hasSelectorCheckbox: Enabled.True,
+    normalLevelShift: 20,
+    dotLevelShift: 20,
+    lineLevelShift: 20,
+    normalItemsInterval: 10,
+    dotItemsInterval: 10,
+    lineItemsInterval: 10,
+    arrowsDirection: GroupByType.Parents,
+    showExtraArrows: false,
+    items: [
+      { id: 1, title: "Thomas Williams", label: "Thomas Williams", description: "1st husband", image: photos.a },
+      { id: 2, title: "Mary Spencer", label: "Mary Spencer", description: "The Mary",image: photos.a },
+      { id: 3, title: "David Kirby", label: "David Kirby", description: "2nd Husband", image: photos.a },
+      { id: 4, parents: [1, 2], title: "Brad Williams", label: "Brad Williams", description: "1st son", image: photos.a },
+      { id: 5, parents: [2, 3], title: "Mike Kirby", label: "Mike Kirby", description: "2nd son, having 2 spouses", image: photos.a},
+      { id: 6, title: "Lynette Maloney", label: "Lynette Maloney", description: "Spouse I", image: photos.a },
+      { id: 11, parents: [5, 6], title: "Steven Powell", label: "Steven Powell", description: "1st son", image: photos.a },
+      { id: 7, title: "Sara Kemp", label: "Sara Kemp", description: "Spouse II", image: photos.a },
+      { id: 12, parents: [5, 7], title: "John Smith", label: "John Smith", description: "2ns son", image: photos.a },
+      { id: 8, parents: [7], title: "Leon Kemp", label: "Leon Kemp", description: "", image: photos.a }
+    ]
   };
 
-  return (
-    <Stack direction="row" spacing="md">
-      <Box w="100%" h="100vh">
-        <Tree
-          data={tree}
-          zoomable={true}
-          onNodeClick={handleClick}
-          translate={{
-            x: 200,
-            y: 200,
-          }}
-          renderCustomNodeElement={(nodeInfo) => renderNewNode(nodeInfo)}
-        />
-      </Box>
-    </Stack>
-  );*/
-}
-
-export function TreeHome() {
-  const [rootId, setRootId] = useState(people[0].id);
+ 
   return (
     <div>
       <Navbar bg="light" expand="lg" sticky="top">
@@ -162,41 +153,49 @@ export function TreeHome() {
             placeholder="Search"
             className="me-2"
             aria-label="Search"
+            onChange = {(event) => setSearch(event.target.value)}
           />
-          <Button type="submit" variant="outline-success">
+          <Button type="button" onClick={SelectNodes} variant="outline-success">
             Search
-          </Button>
+          </Button >
         </Form>
-        <Button type="button" value="Add Person" />
+        <Button type="button"  onClick = {handleShow} variant="success" >Add</Button>
       </Navbar>
-      <div>
-        <ReactFamilyTree
-          nodes={people}
-          rootId={rootId}
-          width={WIDTH}
-          height={HEIGHT}
-          renderNode={(node) => (
-            <PersonNode
-              key={node.id}
-              id={node.id}
-              gender={node.gender}
-              node={node}
-              onSubClick={setRootId}
-              style={{
-                width: WIDTH,
-                height: HEIGHT,
-                // padding: HEIGHT * 0.1,
-                transform: `translate(${node.left * (WIDTH / 2)}px, ${
-                  node.top * (HEIGHT / 2)
-                }px)`
-              }}
-            />
-          )}
-        />
+
+
+      <div className="placeholder">
+    <FamDiagram centerOnCursor={true} config={config} />
       </div>
-  
+
+
+
+      <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Adding a new Person to the Tree</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label>Nome</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="name"
+                  autoFocus
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleClose}>
+              Add New Person
+            </Button>
+          </Modal.Footer>
+        </Modal>
     </div>
-   
-    
   );
 }
+
+
