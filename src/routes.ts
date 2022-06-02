@@ -13,6 +13,7 @@ import { SendEmailController } from "./controllers/SendEmailController";
 import { TicketCreateController } from "./controllers/TicketCreateController";
 import { validateToken } from "./middleware/Authenticate";
 import { DeleteNodeController } from "./controllers/DeleteNodeController";
+import { LinkParentController } from "./controllers/LinkParentController";
 
 const router = Router();
 
@@ -42,5 +43,7 @@ router.post("/email", new SendEmailController().handle);
 router.post("/create-node-parent", new AddParentController().handle);
 
 router.post("/delete-node", new DeleteNodeController().handle);
+
+router.put("link-parent", new LinkParentController().handle);
 
 export { router };
