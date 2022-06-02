@@ -3,16 +3,18 @@ import nodemailer from "nodemailer";
 class SendEmailService {
   execute(receiverEmail: string, subject: string, body: string) {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.sapo.pt",
+      port: "465",
+      secure: true,
       auth: {
-        user: "msp.genealogika@gmail.com",
+        user: "genealogika@sapo.pt",
         pass: "12##MSPGenealogika",
       },
     });
 
     transporter
       .sendMail({
-        from: '"Genealogika" <msp.genealogika@gmail.com>', // sender address
+        from: '"Genealogika" <genealogika@sapo.pt>', // sender address
         to: receiverEmail, // list of receivers
         subject: subject, // Subject line
         text: body, // plain text body

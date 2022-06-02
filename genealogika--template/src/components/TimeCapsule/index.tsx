@@ -22,17 +22,11 @@ export function TimeCapsule() {
   async function handleTimeCapsule(event: FormEvent) {
     event.preventDefault();
 
-    await api.post("id-from-token", {}).then((response) => {
-      console.log(response.data);
-      setUserId(response.data);
-      console.log(user_id);
-    });
+    let response = await api.post("id-from-token", {});
 
-    await api.post<User>("users", { user_id }).then((response) => {
-      setUser(response.data);
-    });
-    console.log(user);
-    const email = user.email;
+    response = await api.post<User>("users", response.data);
+    console.log(response.data);
+    const email = response.data.email;
     const body = `Olá aqui está a tua Cápsula do Tempo.\n\nCor preferida: ${color}\nAnimal Espiritual: ${spirit}\nAnimal Preferido: ${animal}\nNúmero Preferido: ${number}\n\n\nGenealogika`;
 
     await api.post("email", {
