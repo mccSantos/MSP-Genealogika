@@ -9,11 +9,14 @@ import Container from "react-bootstrap/Container";
 import { PageFitMode, Enabled, GroupByType, LCA, Tree } from "basicprimitives";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus, faUserSlash,faEnvelopeOpen} from "@fortawesome/free-solid-svg-icons";
+import {
+  faUserPlus,
+  faUserSlash,
+  faEnvelopeOpen,
+} from "@fortawesome/free-solid-svg-icons";
 
 import logo from "../../assets/Genealogika_logo.png";
 import { NavDropdown, Modal } from "react-bootstrap";
-
 
 var photos = {
   a:
@@ -37,24 +40,24 @@ type NodeDB = {
 export function TreeHome() {
   const [search, setSearch] = useState("");
   const [show, setShow] = useState(false);
+  const [showP, setShowP] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const handleCloseP = () => setShow(false);
-  const handleShowP = () => setShow(true);
+  const handleCloseP = () => setShowP(false);
+  const handleShowP = () => setShowP(true);
   const [idP, setIdP] = useState("");
   const [newNode, setNewNode] = useState("");
   const [firstRun, setFirstRun] = useState(true);
   const [content, setContent] = useState("");
-  
 
   const [nodes, setNodes] = useState([]);
   if (firstRun) {
     SelectNodes();
     setFirstRun(false);
   }
- 
+
   async function CreateNewNodeP(event: FormEvent) {
     event.preventDefault();
 
@@ -63,24 +66,30 @@ export function TreeHome() {
     }
     var id = idP;
 
-    await api.post("create-node-parent", { name: newNode, parent: id });
+    await api.post("create-node-parent", {
+      name: newNode,
+      parent: id,
+      content,
+    });
     processNodes();
     handleCloseP();
   }
-  
-  /*async function onRemoveButtonClick() {
-    var id = idP;
 
-    await api.delete("delete-node", {id});
+  async function onRemoveButtonClick() {
+    var id = idP;
+    //console.log(id);
+    await api.post("delete-node", { id });
     processNodes();
-  }*/
+  }
 
   async function CreateNewNode(event: FormEvent) {
+    //console.log("AQUI");
     event.preventDefault();
     if (!newNode.trim()) {
       return;
     }
-    await api.post("create-node", { name: newNode });
+    await api.post("create-node", { name: newNode, content });
+    processNodes();
     handleClose();
   }
   function processNodes() {
@@ -115,36 +124,69 @@ export function TreeHome() {
       });
   }
 
+  function AddParents(node: NodeDB) {
+    var parents = node.parents;
+    var result = [];
+    if (parents)
+      for (var i = 0; i < parents.length; i++) {
+        result.push({
+          id: parents[i].id,
+          parents: [],
+          title: parents[i].name,
+          image: logo,
+        });
+      }
+    return result;
+  }
+  function AddChilds(nodes: NodeDB[], name: String) {
+    var result = [];
+    for (var i = 0; i < nodes.length; i++) {
+      var parChild = nodes[i].parents;
+      for (var k = 0; k < parChild.length; k++) {
+        if (search == parChild[k].name) {
+          result.push({
+            id: nodes[k].id,
+            parents: search,
+            title: nodes[k].name,
+            image: logo,
+          });
+        }
+      }
+    }
+    return result;
+  }
   function SelectNodes() {
     if (search == "") {
       processNodes();
     } else {
-      var newNodes = [];
-      for (var i = 0; i < nodes.length; i++) {
-        var node = nodes[i];
-        if (node.title == search) {
-          newNodes.push({
-            id: node.id,
-            parents: node.parents,
-            title: node.title,
-            image: logo,
-          });
-          var p = node.parents;
-          for (var j = 0; j < p.length; j++) {
-            for (var k = 0; k < nodes.length; k++) {
-              if (nodes[i].id == p[j]) {
-                newNodes.push({
-                  id: nodes[i].id,
-                  parents: nodes[i].parents,
-                  title: nodes[i].title,
-                  image: logo,
-                });
-              }
-            }
+      api.get<NodeDB[]>("nodes").then((response) => {
+        let tree = response.data;
+        var newNodes = [];
+        for (var i = 0; i < tree.length; i++) {
+          var node = tree[i];
+          console.log(node.name);
+          console.log(search);
+
+          if (node.name == search) {
+            console.log("HERE");
+
+            let par = node.parents;
+            let parents = [];
+            for (var j = 0; j < par.length; j++) parents.push(par[j].id);
+
+            newNodes.push({
+              id: node.id,
+              parents: parents,
+              title: node.name,
+              image: logo,
+            });
+            newNodes.push(AddParents(node));
+            newNodes.push(AddChilds(tree, search));
           }
-          break;
         }
-      }
+        console.log(newNodes);
+        setNodes(newNodes);
+      });
     }
   }
   const config = {
@@ -183,8 +225,11 @@ export function TreeHome() {
             className="StyledButton"
             onClick={(event) => {
               event.stopPropagation();
+              //console.log(itemConfig);
+
               setIdP(itemConfig.id);
-              //onRemoveButtonClick();
+              // console.log(idP);
+              onRemoveButtonClick();
             }}
           >
             <FontAwesomeIcon icon={faUserSlash} />
@@ -195,7 +240,6 @@ export function TreeHome() {
             onClick={(event) => {
               event.stopPropagation();
               setIdP(itemConfig.id);
-              
             }}
           >
             <FontAwesomeIcon icon={faEnvelopeOpen} />
@@ -246,10 +290,17 @@ export function TreeHome() {
                 onChange={(event) => setNewNode(event.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea1"
+            >
               <Form.Label>Content</Form.Label>
-              <Form.Control as="textarea" placeholder= "content" rows={3} 
-                onChange={(event) => setContent(event.target.value)} />
+              <Form.Control
+                as="textarea"
+                placeholder="content"
+                rows={3}
+                onChange={(event) => setContent(event.target.value)}
+              />
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -262,7 +313,7 @@ export function TreeHome() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal show={show} onHide={handleCloseP}>
+      <Modal show={showP} onHide={handleCloseP}>
         <Modal.Header closeButton>
           <Modal.Title>Adding a new Person to the Tree with Parent</Modal.Title>
         </Modal.Header>
@@ -277,10 +328,17 @@ export function TreeHome() {
                 onChange={(event) => setNewNode(event.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+            <Form.Group
+              className="mb-3"
+              controlId="exampleForm.ControlTextarea1"
+            >
               <Form.Label>Content</Form.Label>
-              <Form.Control as="textarea" placeholder= "content" rows={3} 
-                onChange={(event) => setContent(event.target.value)} />
+              <Form.Control
+                as="textarea"
+                placeholder="content"
+                rows={3}
+                onChange={(event) => setContent(event.target.value)}
+              />
             </Form.Group>
           </Form>
         </Modal.Body>

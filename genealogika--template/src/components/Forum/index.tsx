@@ -85,12 +85,14 @@ export function Forum() {
   async function handleAddTicket(event: FormEvent) {
     if (!newTicket.trim() || !content.trim()) return;
     getId();
-    //console.log("AQUI");
+    console.log("AQUI");
+    console.log(user);
     await api.post("create-ticket", {
       subject: newTicket,
       content,
       user_id: user,
     });
+    getTickets();
     handleClose();
   }
 
@@ -98,7 +100,7 @@ export function Forum() {
     <div>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Adding a new Person to the Tree</Modal.Title>
+          <Modal.Title>Adding a new Ticket</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>

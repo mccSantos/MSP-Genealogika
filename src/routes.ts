@@ -41,6 +41,6 @@ router.post("/email", new SendEmailController().handle);
 
 router.post("/create-node-parent", new AddParentController().handle);
 
-router.delete("/delete-node", new DeleteNodeController().handle);
+router.post("/delete-node", new DeleteNodeController().handle);
 
 export { router };

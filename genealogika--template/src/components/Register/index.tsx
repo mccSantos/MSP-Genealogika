@@ -3,12 +3,15 @@ import logo from "../../assets/Genealogika_logo.png";
 import Button from "react-bootstrap/button";
 import { api } from "../../services/api";
 import { useState, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+
+  const navigate = useNavigate();
 
   async function handleRegister(event: FormEvent) {
     event.preventDefault();
@@ -21,6 +24,8 @@ export function Register() {
     }
 
     await api.post("register", { name, email, password });
+
+    navigate("/login");
   }
 
   return (
@@ -28,11 +33,7 @@ export function Register() {
       <div className={styles.formdiv}>
         <img src={logo} alt="Genealogika" className={styles.logo} />
         <div>
-          <form
-            action="http://localhost:3000/"
-            onSubmit={handleRegister}
-            className={styles.container}
-          >
+          <form onSubmit={handleRegister} className={styles.container}>
             <div className={styles.label}>
               Name
               <br />

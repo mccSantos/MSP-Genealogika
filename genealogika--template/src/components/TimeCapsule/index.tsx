@@ -29,9 +29,9 @@ export function TimeCapsule() {
     });
 
     await api.post<User>("users", { user_id }).then((response) => {
-      console.log(response.data);
       setUser(response.data);
     });
+    console.log(user);
     const email = user.email;
     const body = `Olá aqui está a tua Cápsula do Tempo.\n\nCor preferida: ${color}\nAnimal Espiritual: ${spirit}\nAnimal Preferido: ${animal}\nNúmero Preferido: ${number}\n\n\nGenealogika`;
 
