@@ -18,4 +18,3 @@ Protótipo de uma webapp para a visualização de árvores genealógicas. Feito 
 - $yarn install
 - $yarn dev
 
-https://edigleyssonsilva.medium.com/how-to-send-emails-securely-using-gmail-and-nodejs-eef757525324
