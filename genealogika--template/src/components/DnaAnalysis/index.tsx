@@ -2,6 +2,8 @@ import { FormEvent } from "react";
 import { Button } from "react-bootstrap";
 import { api } from "../../services/api";
 import styles from "./styles.module.scss";
+import logo from "../../assets/dnaanalysis.png";
+import { useNavigate } from "react-router-dom";
 
 export function DnaAnalysis() {
   type User = {
@@ -11,7 +13,13 @@ export function DnaAnalysis() {
     password: string;
   };
 
+  const navigate = useNavigate();
+
   const subject = "DNA Analysis";
+
+  function goHome() {
+    navigate("/");
+  }
 
   async function handleDnaAnalysis(event: FormEvent) {
     event.preventDefault();
@@ -32,6 +40,17 @@ export function DnaAnalysis() {
 
   return (
     <div>
+      <Button
+        variant="secondary"
+        type="button"
+        className={styles.btnHome}
+        onClick={goHome}
+      >
+        Home
+      </Button>
+      <h1>Get to know where you came from</h1>
+      <h2>Unravel your origins</h2>
+      <img src={logo} alt="DNA kit" className={styles.logo}></img>
       <div className={styles.wrapper}>
         <div className={styles.text}>
           The DNA analysis is not real, we just send you an email saying that we

@@ -1,16 +1,25 @@
 .wrapper {
   width: 80%;
-  top: 0;
-  bottom: 0;
   margin: auto;
   height: 100%;
-  padding: 25% 0;
+  //padding: 25% 0;
 }
 
-.btn {
-  float: right;
-}
 .text {
-  text-align: justify;
-  text-justify: inter-word;
+  text-align: -webkit-center;
+  padding: 3vh 0;
+}
+
+h1 {
+  font-weight: bold;
+  padding-top: 8%;
+}
+
+.logo {
+  height: 50vh;
+}
+
+.btnHome {
+  float: left;
+  margin: 5vw;
 }
