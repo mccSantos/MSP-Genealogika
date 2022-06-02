@@ -14,6 +14,7 @@ import { TicketCreateController } from "./controllers/TicketCreateController";
 import { validateToken } from "./middleware/Authenticate";
 import { DeleteNodeController } from "./controllers/DeleteNodeController";
 import { LinkParentController } from "./controllers/LinkParentController";
+import { ReceiveEmailController } from "./controllers/ReceiveEmailController";
 
 const router = Router();
 
@@ -46,4 +47,5 @@ router.post("/delete-node", new DeleteNodeController().handle);
 
 router.put("/link-parent", new LinkParentController().handle);
 
+router.post("/email-receiver" , new ReceiveEmailController().handle);
 export { router };

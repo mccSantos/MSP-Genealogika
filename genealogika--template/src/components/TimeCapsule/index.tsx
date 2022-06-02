@@ -2,7 +2,15 @@ import { api } from "../../services/api";
 import { Button, Form, SSRProvider } from "react-bootstrap";
 import styles from "./styles.module.scss";
 import { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 export function TimeCapsule() {
+  const navigate = useNavigate();
+
+  const navigateHome = () => {
+    navigate("/");
+  };
+
   const [color, setColor] = useState("");
   const [spirit, setSpirit] = useState("");
   const [animal, setAnimal] = useState("");
@@ -34,13 +42,14 @@ export function TimeCapsule() {
       subject,
       body,
     });
+    navigateHome();
   }
 
   return (
     <div className={styles.wrapper}>
       <Form>
         <Form.Group className={styles.formInput} controlId="formBasicFavColor">
-          <Form.Label>Cor Preferida</Form.Label>
+          <Form.Label>Favorite Color</Form.Label>
           <Form.Control
             type="text"
             placeholder="Cor Preferida"
@@ -58,7 +67,7 @@ export function TimeCapsule() {
           className={styles.formInput}
           controlId="formBasicSpiritAnimal"
         >
-          <Form.Label>Animal Espiritual</Form.Label>
+          <Form.Label>Spirit Animal</Form.Label>
           <Form.Control
             type="text"
             placeholder="Animal Espiritual"
@@ -76,7 +85,7 @@ export function TimeCapsule() {
           className={styles.formInput}
           controlId="formBasicPrefAnimal"
         >
-          <Form.Label>Animal Preferido</Form.Label>
+          <Form.Label>Favorite Animal</Form.Label>
           <Form.Control
             type="text"
             placeholder="Animal Preferido"
@@ -89,7 +98,7 @@ export function TimeCapsule() {
           className={styles.formInput}
           controlId="formBasicPrefNumber"
         >
-          <Form.Label>Número Preferido</Form.Label>
+          <Form.Label>Favorite Number</Form.Label>
           <Form.Control
             type="number"
             placeholder="Número Preferido"
@@ -105,6 +114,14 @@ export function TimeCapsule() {
           onClick={handleTimeCapsule}
         >
           Submit
+        </Button>
+        <Button
+          variant="secondary"
+          type="button"
+          onClick={navigateHome}
+          className={styles.formButton}
+        >
+          Close
         </Button>
       </Form>
     </div>
