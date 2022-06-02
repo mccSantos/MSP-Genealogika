@@ -44,7 +44,9 @@ export function Forum() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [subject, setSubject] = useState("");
   const [user, setUser] = useState("");
-  useEffect(() => {
+  const [firstRun, setFirstRun] = useState(true);
+
+  function getTickets() {
     //getId();
     api
       .get<Ticket[]>("tickets")
@@ -58,10 +60,11 @@ export function Forum() {
           alert("Sem cookie");
         }
       });
-  });
-
-  //const token =
-  // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIxQGVtYWlsLmVtYWlsIiwiaWQiOiIxOTM0ZjA0MS0wZTFkLTQwYzctOTczOC0xODFhYzE5NTdjYzciLCJpYXQiOjE2NTM5NDUzMzN9.E19UtxJ0Bghy8F0igvkWZVN1o3zweEFHjgAPjHuhJz4";
+  }
+  if (firstRun) {
+    getTickets();
+    setFirstRun(false);
+  }
 
   async function getId() {
     await api.post("id-from-token", {}).then((response) => {
@@ -70,10 +73,13 @@ export function Forum() {
   }
 
   async function handleSearch(event: FormEvent) {
-    //getId();
-    if (!subject.trim()) return;
-
-    await api.get("tickets-by-subject", {});
+    event.preventDefault();
+    if (!subject.trim()) getTickets();
+    else {
+      await api.post("tickets-by-subject", { subject }).then((response) => {
+        setTickets(response.data);
+      });
+    }
   }
 
   async function handleAddTicket(event: FormEvent) {
@@ -142,7 +148,12 @@ export function Forum() {
               onChange={(event) => setSubject(event.target.value)}
               value={subject}
             />
-            <Button type="submit" variant="success" className={styles.btn}>
+            <Button
+              type="button"
+              variant="success"
+              className={styles.btn}
+              onClick={handleSearch}
+            >
               Search
             </Button>
           </Form>
