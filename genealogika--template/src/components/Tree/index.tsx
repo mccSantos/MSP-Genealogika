@@ -7,21 +7,20 @@ import Navbar from "react-bootstrap/Navbar";
 import Popover from "@mui/material/Popover";
 import { OrgDiagram, FamDiagram } from "basicprimitivesreact";
 import Container from "react-bootstrap/Container";
-import { PageFitMode, Enabled, GroupByType , LCA,Tree} from "basicprimitives";
+import { PageFitMode, Enabled, GroupByType, LCA, Tree } from "basicprimitives";
 import { AdviserPlacementType, AnnotationType, Size } from "basicprimitives";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus, faUserSlash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserPlus, faUserSlash } from "@fortawesome/free-solid-svg-icons";
 import {
   ConnectorShapeType,
   Colors,
-  LineType, 
+  LineType,
   ConnectorPlacementType,
 } from "basicprimitives";
 
 import logo from "../../assets/Genealogika_logo.png";
-import { NavDropdown, Modal } from "react-bootstrap"; 
+import { NavDropdown, Modal } from "react-bootstrap";
 import styles from "./styles.module.scss";
-
 
 var photos = {
   a:
@@ -42,20 +41,18 @@ type NodeDB = {
   children: NodeDB[];
 };
 
-
 export function TreeHome() {
   const [search, setSearch] = useState("");
   const [show, setShow] = useState(false);
- 
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-   
+
   const [showParent, setshowParent] = useState(false);
   const handleCloseP = () => setShow(false);
   const handleShowP = () => setShow(true);
   const [newNodeP, setNewNodeP] = useState("");
-  var itemC = {id: "ansd"};
+  const [idP, setIdP] = useState("");
   const [newNode, setNewNode] = useState("");
   const [firstRun, setFirstRun] = useState(true);
   //const [tree, setTree] = useState<NodeDB[]>([]);
@@ -113,9 +110,8 @@ export function TreeHome() {
     }
     return result;
   }*/
-    
-  
-/*
+
+  /*
   function getTree(items = []) {
     const tree = Tree();
 
@@ -129,13 +125,16 @@ export function TreeHome() {
   }*/
   async function CreateNewNodeP(event: FormEvent) {
     event.preventDefault();
-    if (!newNode.trim()) {
+
+    if (!newNodeP.trim()) {
       return;
     }
-    var id = itemC.id;
-    await api.post("create-node-parent", { name: newNode, id });
-    processNodes();
+    var id = idP;
+    console.log(id);
 
+    await api.post("create-node-parent", { name: newNodeP, parent: id });
+    processNodes();
+    handleCloseP();
   }
   async function CreateNewNode(event: FormEvent) {
     event.preventDefault();
@@ -226,26 +225,34 @@ export function TreeHome() {
     lineItemsInterval: 30,
     arrowsDirection: GroupByType.Children,
     showExtraArrows: false,
-    onButtonsRender: (({ context: itemConfig }) => {
-      return <>
-        <button key="1" className="StyledButton"
-          onClick={(event) => {
-            event.stopPropagation();
-            itemC = itemConfig;
-            handleShowP;
-          }}>
-          <FontAwesomeIcon icon={faUserPlus} />
-        </button>
-        <button key="2" className="StyledButton"
-          onClick={(event) => {
-            event.stopPropagation();
-            itemC = itemConfig;
-            //onRemoveButtonClick(itemConfig);
-          }}>
-          <FontAwesomeIcon icon={faUserSlash} />
-        </button>
-      </>
-    }),
+    onButtonsRender: ({ context: itemConfig }) => {
+      return (
+        <>
+          <button
+            key="1"
+            className="StyledButton"
+            onClick={(event) => {
+              event.stopPropagation();
+              setIdP(itemConfig.id);
+              handleShowP();
+            }}
+          >
+            <FontAwesomeIcon icon={faUserPlus} />
+          </button>
+          <button
+            key="2"
+            className="StyledButton"
+            onClick={(event) => {
+              event.stopPropagation();
+              setIdP(itemConfig.id);
+              //onRemoveButtonClick(itemConfig);
+            }}
+          >
+            <FontAwesomeIcon icon={faUserSlash} />
+          </button>
+        </>
+      );
+    },
   };
 
   return (
