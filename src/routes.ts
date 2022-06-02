@@ -3,6 +3,7 @@ import { ForumController } from "./controllers/ForumController";
 import { GetNodeController } from "./controllers/GetNodeController";
 import { GetTicketsBySubjectController } from "./controllers/GetTicketsBySubjectController";
 import { GetTicketsController } from "./controllers/GetTicketsController";
+import { AddParentController } from "./controllers/AddParentController";
 import { GetUserController } from "./controllers/GetUserController";
 import { GetUserIdFromTokenController } from "./controllers/GetUserIdFromTokenController";
 import { LoginController } from "./controllers/LoginController";
@@ -11,6 +12,7 @@ import { RegisterController } from "./controllers/RegisterController";
 import { SendEmailController } from "./controllers/SendEmailController";
 import { TicketCreateController } from "./controllers/TicketCreateController";
 import { validateToken } from "./middleware/Authenticate";
+
 
 const router = Router();
 
@@ -36,5 +38,7 @@ router.get("/validate-token", validateToken);
 router.post("/users", new GetUserController().handle);
 
 router.post("/email", new SendEmailController().handle);
+
+router.post("/create-node-parent", new AddParentController().handle);
 
 export { router };

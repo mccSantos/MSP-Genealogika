@@ -7,18 +7,21 @@ import Navbar from "react-bootstrap/Navbar";
 import Popover from "@mui/material/Popover";
 import { OrgDiagram, FamDiagram } from "basicprimitivesreact";
 import Container from "react-bootstrap/Container";
-import { PageFitMode, Enabled, GroupByType } from "basicprimitives";
+import { PageFitMode, Enabled, GroupByType , LCA,Tree} from "basicprimitives";
 import { AdviserPlacementType, AnnotationType, Size } from "basicprimitives";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserPlus, faUserSlash } from '@fortawesome/free-solid-svg-icons';
 import {
   ConnectorShapeType,
   Colors,
-  LineType,
+  LineType, 
   ConnectorPlacementType,
 } from "basicprimitives";
 
 import logo from "../../assets/Genealogika_logo.png";
-import { NavDropdown, Modal } from "react-bootstrap";
+import { NavDropdown, Modal } from "react-bootstrap"; 
 import styles from "./styles.module.scss";
+
 
 var photos = {
   a:
@@ -38,59 +41,141 @@ type NodeDB = {
   parents: NodeDB[];
   children: NodeDB[];
 };
-/*
-let nodes = [];
+
 
 export function TreeHome() {
-   const [search, setSearch] = useState("");
-const [show, setShow] = useState(false);
-const handleClose = () => setShow(false);
-const handleShow = () => setShow(true);
-const [newNode, setNewNode] = useState("");
- function processNodes() {
-    const [tree, setTree] = useState<NodeDB[]>([]);
+  const [search, setSearch] = useState("");
+  const [show, setShow] = useState(false);
+ 
 
-    useEffect(() => {
-      api
-        .get<NodeDB[]>("Node")
-        .then((response) => {
-          setTree(response.data);
-        })
-        .catch((error) => {
-          console.log(error.response.status);
-          if (error.response.status == 401) {
-            alert("Sem cookie");
-          }
-        });
-    });
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+   
+  const [showParent, setshowParent] = useState(false);
+  const handleCloseP = () => setShow(false);
+  const handleShowP = () => setShow(true);
+  const [newNodeP, setNewNodeP] = useState("");
+  var itemC = {id: "ansd"};
+  const [newNode, setNewNode] = useState("");
+  const [firstRun, setFirstRun] = useState(true);
+  //const [tree, setTree] = useState<NodeDB[]>([]);
+  const [nodes, setNodes] = useState([]);
+  if (firstRun) {
+    SelectNodes();
+    setFirstRun(false);
+  }
+  /*this.onAddButtonClick = onAddButtonClick.bind(this);
+  this.onRemoveButtonClick = onRemoveButtonClick.bind(this);
 
-    for (var i = 0; i < tree.length; i++) {
-      var p = tree[i].parents;
-      var parentsResult = [];
-      for (var j = 0; j < p.length; j++) {
-        parentsResult.push(p[j].id);
-      }
-      nodes.push({
-        id: tree[i].id,
-        parents: parentsResult,
-        title: tree[i].name,
-        image: logo,
-      });
-    }
+  
+
+  function onRemoveButtonClick(itemConfig) {
+    const { items } = this.state;
+
+    this.setState(this.getDeletedItems(items, [itemConfig.id]));
   }
 
-  //const [pop, setPop] = useState<HTMLButtonElement | null>(null);
+  function getDeletedItems(items = [], deletedItems = []) {
+    const tree = this.getTree(items);
+    const hash = deletedItems.reduce((agg, itemid) => {
+      agg.add(itemid.toString());
+      return agg;
+    }, new Set());
+    const cursorParent = this.getDeletedItemsParent(tree, deletedItems, hash);
+    const result = [];
+    tree.loopLevels(this, (nodeid, node) => {
+      if (hash.has(nodeid.toString())) {
+        return tree.SKIP;
+      }
+      result.push(node);
+    });
 
-  /* const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setPop(event.currentTarget);
-  };
-  const handleClose = () => {
-    setPop(null);
-  };*/
-/*<Popover id={id} open={open}  anchorEl={pop} onClose={handleClose} 
-            anchorOrigin={{ vertical: "bottom",horizontal: "left", }} >
-            <Button size="sm"> </Button>
-              </Popover>*/ /*
+    return {
+      items: result,
+      cursorItem: cursorParent
+    };
+  }
+
+  function getDeletedItemsParent(tree, deletedItems, deletedHash) {
+    let result = null;
+    const lca = LCA(tree);
+    result = deletedItems.reduce((agg, itemid) => {
+      if (agg == null) {
+        agg = itemid;
+      } else {
+        agg = lca.getLowestCommonAncestor(agg, itemid);
+      }
+      return agg;
+    }, null);
+
+    if (deletedHash.has(result.toString())) {
+      result = tree.parentid(result);
+    }
+    return result;
+  }*/
+    
+  
+/*
+  function getTree(items = []) {
+    const tree = Tree();
+
+    // rebuild tree
+    for (let index = 0; index < items.length; index += 1) {
+      const item = items[index];
+      tree.add(item.parent, item.id, item);
+    }
+
+    return tree;
+  }*/
+  async function CreateNewNodeP(event: FormEvent) {
+    event.preventDefault();
+    if (!newNode.trim()) {
+      return;
+    }
+    var id = itemC.id;
+    await api.post("create-node-parent", { name: newNode, id });
+    processNodes();
+
+  }
+  async function CreateNewNode(event: FormEvent) {
+    event.preventDefault();
+    if (!newNode.trim()) {
+      return;
+    }
+    await api.post("create-node", { name: newNode });
+    handleClose();
+  }
+  function processNodes() {
+    api
+      .get<NodeDB[]>("nodes")
+      .then((response) => {
+        let tree = response.data;
+        let nodes = [];
+        for (var i = 0; i < tree.length; i++) {
+          var p = tree[i].parents;
+          var parentsResult = [];
+          if (p)
+            for (var j = 0; j < p.length; j++) {
+              parentsResult.push(p[j].id);
+            }
+          if (parentsResult.length == 0) {
+            parentsResult = null;
+          }
+          nodes.push({
+            id: tree[i].id,
+            parents: parentsResult,
+            title: tree[i].name,
+            image: logo,
+          });
+        }
+        setNodes(nodes);
+      })
+      .catch((error) => {
+        if (error.response.status == 401) {
+          alert("Sem cookie");
+        }
+      });
+  }
 
   function SelectNodes() {
     if (search == "") {
@@ -124,70 +209,43 @@ const [newNode, setNewNode] = useState("");
       }
     }
   }
-
-async function CreateNewNode(event: FormEvent) {
-  event.preventDefault();
-  if (!newNode.trim()) {
-    return;
-  }
-  await api.post("create-node", { name: newNode });
-  handleClose();
-}
-const config = {
-    pageFitMode: PageFitMode.FitToPage,
+  const config = {
+    pageFitMode: PageFitMode.AutoSize,
+    autoSizeMinimum: { width: 100, height: 100 },
     cursorItem: 2,
+    highlightItem: 0,
+    hasSelectorCheckbox: Enabled.False,
+    items: nodes,
     linesWidth: 1,
     linesColor: "black",
-    hasSelectorCheckbox: Enabled.True,
     normalLevelShift: 20,
     dotLevelShift: 20,
     lineLevelShift: 20,
     normalItemsInterval: 10,
     dotItemsInterval: 30,
     lineItemsInterval: 30,
-    arrowsDirection: GroupByType.Parents,
+    arrowsDirection: GroupByType.Children,
     showExtraArrows: false,
-    items: [
-      { id: 1, title: "Thomas Williams", label: "Thomas Williams", description: "1st husband", image: photos.a },
-      { id: 2, title: "Mary Spencer", label: "Mary Spencer", description: "The Mary",image: photos.a },
-      { id: 3, title: "David Kirby", label: "David Kirby", description: "2nd Husband", image: photos.a },
-      { id: 4, parents: [1, 2], title: "Brad Williams", label: "Brad Williams", description: "1st son", image: photos.a },
-      { id: 5, parents: [2, 3], title: "Mike Kirby", label: "Mike Kirby", description: "2nd son, having 2 spouses", image: photos.a},
-      { id: 6, title: "Lynette Maloney", label: "Lynette Maloney", description: "Spouse I", image: photos.a },
-      { id: 11, parents: [5, 6], title: "Steven Powell", label: "Steven Powell", description: "1st son", image: photos.a },
-      { id: 7, title: "Sara Kemp", label: "Sara Kemp", description: "Spouse II", image: photos.a },
-      { id: 12, parents: [5, 7], title: "John Smith", label: "John Smith", description: "2ns son", image: photos.a },
-      { id: 8, parents: [7], title: "Leon Kemp", label: "Leon Kemp", description: "", image: photos.a }
-    ]
-  }; */ /*
-  const config = {
-    pageFitMode: PageFitMode.FitToPage,
-    cursorItem: 0,
-    highlightItem: 0,
-    hasSelectorCheckbox: Enabled.True,
-    items: [
-      {
-        id: 0,
-        parent: null,
-        title: "James Smith",
-        description: "VP, Public Sector",
-        image: photos.a,
-      },
-      {
-        id: 1,
-        parent: 0,
-        title: "Ted Lucas",
-        description: "VP, Human Resources",
-        image: photos.a,
-      },
-      {
-        id: 2,
-        parent: 0,
-        title: "Fritz Stuger",
-        description: "Business Solutions, US",
-        image: photos.a,
-      },
-    ],
+    onButtonsRender: (({ context: itemConfig }) => {
+      return <>
+        <button key="1" className="StyledButton"
+          onClick={(event) => {
+            event.stopPropagation();
+            itemC = itemConfig;
+            handleShowP;
+          }}>
+          <FontAwesomeIcon icon={faUserPlus} />
+        </button>
+        <button key="2" className="StyledButton"
+          onClick={(event) => {
+            event.stopPropagation();
+            itemC = itemConfig;
+            //onRemoveButtonClick(itemConfig);
+          }}>
+          <FontAwesomeIcon icon={faUserSlash} />
+        </button>
+      </>
+    }),
   };
 
   return (
@@ -242,176 +300,7 @@ const config = {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      <div className="App">
-        <OrgDiagram centerOnCursor={true} config={config} />
-      </div>
-    </div>
-  );
-}*/
-export function TreeHome() {
-  const [search, setSearch] = useState("");
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  const [newNode, setNewNode] = useState("");
-  const [firstRun, setFirstRun] = useState(true);
-  const [tree, setTree] = useState<NodeDB[]>([]);
-  const [nodes, setNodes] = useState([]);
-  //let nodes = [];
-
-  if (firstRun) {
-    SelectNodes();
-    setFirstRun(false);
-  }
-
-  async function CreateNewNode(event: FormEvent) {
-    event.preventDefault();
-    if (!newNode.trim()) {
-      return;
-    }
-    await api.post("create-node", { name: newNode });
-    handleClose();
-  }
-  function processNodes() {
-    api
-      .get<NodeDB[]>("nodes")
-      .then((response) => {
-        console.log("HERE");
-        //setTree(response.data);
-        let tree = response.data;
-        let nodes = [];
-        for (var i = 0; i < tree.length; i++) {
-          var p = tree[i].parents;
-          var parentsResult = [];
-          if (p)
-            for (var j = 0; j < p.length; j++) {
-              parentsResult.push(p[j].id);
-            }
-          if (parentsResult.length == 0) {
-            parentsResult = null;
-          }
-          nodes.push({
-            id: tree[i].id,
-            parents: parentsResult,
-            title: tree[i].name,
-            image: logo,
-          });
-        }
-        console.log(nodes);
-        setNodes(nodes);
-      })
-      .catch((error) => {
-        console.error(error);
-        console.log(error.response.status);
-        if (error.response.status == 401) {
-          alert("Sem cookie");
-        }
-      });
-  }
-
-  function SelectNodes() {
-    console.log(search);
-    if (search == "") {
-      processNodes();
-    } else {
-      var newNodes = [];
-      for (var i = 0; i < nodes.length; i++) {
-        var node = nodes[i];
-        if (node.title == search) {
-          newNodes.push({
-            id: node.id,
-            parents: node.parents,
-            title: node.title,
-            image: logo,
-          });
-          var p = node.parents;
-          for (var j = 0; j < p.length; j++) {
-            for (var k = 0; k < nodes.length; k++) {
-              if (nodes[i].id == p[j]) {
-                newNodes.push({
-                  id: nodes[i].id,
-                  parents: nodes[i].parents,
-                  title: nodes[i].title,
-                  image: logo,
-                });
-              }
-            }
-          }
-          break;
-        }
-      }
-    }
-  }
-  const config = {
-    pageFitMode: PageFitMode.AutoSize,
-    autoSizeMinimum: { width: 100, height: 100 },
-    cursorItem: 2,
-    highlightItem: 0,
-    hasSelectorCheckbox: Enabled.False,
-    items: nodes,
-    linesWidth: 1,
-    linesColor: "black",
-    normalLevelShift: 20,
-    dotLevelShift: 20,
-    lineLevelShift: 20,
-    normalItemsInterval: 10,
-    dotItemsInterval: 30,
-    lineItemsInterval: 30,
-    arrowsDirection: GroupByType.Children,
-    showExtraArrows: false,
-    /*items: [
-      {
-        id: 0,
-        parent: null,
-        title: "James Smith",
-        description: "VP, Public Sector",
-        image: photos.a,
-      },
-      {
-        id: 1,
-        parent: 0,
-        title: "Ted Lucas",
-        description: "VP, Human Resources",
-        image: photos.a,
-      },
-      {
-        id: 2,
-        parent: 0,
-        title: "Fritz Stuger",
-        description: "Business Solutions, US",
-        image: photos.a,
-      },
-    ],*/
-  };
-
-  return (
-    <div>
-      <Navbar bg="light" expand="lg" sticky="top">
-        <Container fluid>
-          <Navbar.Brand href="/">Home</Navbar.Brand>
-          <Form className="d-flex">
-            <FormControl
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-              onChange={(event) => setSearch(event.target.value)}
-            />
-            <Button
-              type="button"
-              onClick={SelectNodes}
-              variant="outline-success"
-            >
-              Search
-            </Button>
-          </Form>
-          <Button type="button" onClick={handleShow} variant="success">
-            Add
-          </Button>
-        </Container>
-      </Navbar>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleCloseP}>
         <Modal.Header closeButton>
           <Modal.Title>Adding a new Person to the Tree</Modal.Title>
         </Modal.Header>
@@ -423,16 +312,16 @@ export function TreeHome() {
                 type="text"
                 placeholder="name"
                 autoFocus
-                onChange={(event) => setNewNode(event.target.value)}
+                onChange={(event) => setNewNodeP(event.target.value)}
               />
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleCloseP}>
             Close
           </Button>
-          <Button variant="primary" onClick={CreateNewNode}>
+          <Button variant="primary" onClick={CreateNewNodeP}>
             Add New Person
           </Button>
         </Modal.Footer>
