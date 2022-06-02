@@ -39,6 +39,7 @@ model Token {
 model Node {
   id   String @id @default(uuid())
   name String
+  content String
 
   parents  Node[] @relation("FamilyLink", references: [id])
   children Node[] @relation("FamilyLink", references: [id])

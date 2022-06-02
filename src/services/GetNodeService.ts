@@ -7,7 +7,6 @@ class GetNodeService {
         parents: true,
       },
     });
-    console.log(nodes);
 
     return nodes;
   }

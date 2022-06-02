@@ -3,19 +3,15 @@ import prismaClient from "../prisma";
 import { io } from "../app";
 
 class NodeCreateService {
-  async execute(name: string) {
+  async execute(name: string, content: string) {
     const node = await prismaClient.node.create({
       data: {
         name: name,
+        content: content,
       },
     });
 
-    const infoWS = {
-      content: node.name,
-    };
-
-    io.emit("new_Node", infoWS);
-
+  
     return node;
   }
 }

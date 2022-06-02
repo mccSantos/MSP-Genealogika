@@ -4,23 +4,16 @@ import Button from "react-bootstrap/button";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Navbar from "react-bootstrap/Navbar";
-import Popover from "@mui/material/Popover";
 import { OrgDiagram, FamDiagram } from "basicprimitivesreact";
 import Container from "react-bootstrap/Container";
 import { PageFitMode, Enabled, GroupByType, LCA, Tree } from "basicprimitives";
-import { AdviserPlacementType, AnnotationType, Size } from "basicprimitives";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus, faUserSlash } from "@fortawesome/free-solid-svg-icons";
-import {
-  ConnectorShapeType,
-  Colors,
-  LineType,
-  ConnectorPlacementType,
-} from "basicprimitives";
+import { faUserPlus, faUserSlash,faEnvelopeOpen} from "@fortawesome/free-solid-svg-icons";
 
 import logo from "../../assets/Genealogika_logo.png";
 import { NavDropdown, Modal } from "react-bootstrap";
-import styles from "./styles.module.scss";
+
 
 var photos = {
   a:
@@ -48,94 +41,40 @@ export function TreeHome() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [showParent, setshowParent] = useState(false);
   const handleCloseP = () => setShow(false);
   const handleShowP = () => setShow(true);
-  const [newNodeP, setNewNodeP] = useState("");
   const [idP, setIdP] = useState("");
   const [newNode, setNewNode] = useState("");
   const [firstRun, setFirstRun] = useState(true);
-  //const [tree, setTree] = useState<NodeDB[]>([]);
+  const [content, setContent] = useState("");
+  
+
   const [nodes, setNodes] = useState([]);
   if (firstRun) {
     SelectNodes();
     setFirstRun(false);
   }
-  /*this.onAddButtonClick = onAddButtonClick.bind(this);
-  this.onRemoveButtonClick = onRemoveButtonClick.bind(this);
-
-  
-
-  function onRemoveButtonClick(itemConfig) {
-    const { items } = this.state;
-
-    this.setState(this.getDeletedItems(items, [itemConfig.id]));
-  }
-
-  function getDeletedItems(items = [], deletedItems = []) {
-    const tree = this.getTree(items);
-    const hash = deletedItems.reduce((agg, itemid) => {
-      agg.add(itemid.toString());
-      return agg;
-    }, new Set());
-    const cursorParent = this.getDeletedItemsParent(tree, deletedItems, hash);
-    const result = [];
-    tree.loopLevels(this, (nodeid, node) => {
-      if (hash.has(nodeid.toString())) {
-        return tree.SKIP;
-      }
-      result.push(node);
-    });
-
-    return {
-      items: result,
-      cursorItem: cursorParent
-    };
-  }
-
-  function getDeletedItemsParent(tree, deletedItems, deletedHash) {
-    let result = null;
-    const lca = LCA(tree);
-    result = deletedItems.reduce((agg, itemid) => {
-      if (agg == null) {
-        agg = itemid;
-      } else {
-        agg = lca.getLowestCommonAncestor(agg, itemid);
-      }
-      return agg;
-    }, null);
-
-    if (deletedHash.has(result.toString())) {
-      result = tree.parentid(result);
-    }
-    return result;
-  }*/
-
-  /*
-  function getTree(items = []) {
-    const tree = Tree();
-
-    // rebuild tree
-    for (let index = 0; index < items.length; index += 1) {
-      const item = items[index];
-      tree.add(item.parent, item.id, item);
-    }
-
-    return tree;
-  }*/
+ 
   async function CreateNewNodeP(event: FormEvent) {
     event.preventDefault();
 
-    if (!newNodeP.trim()) {
+    if (!newNode.trim()) {
       return;
     }
     var id = idP;
-    console.log(id);
 
-    await api.post("create-node-parent", { name: newNodeP, parent: id });
+    await api.post("create-node-parent", { name: newNode, parent: id });
     processNodes();
     handleCloseP();
   }
+  
+  /*async function onRemoveButtonClick() {
+    var id = idP;
+
+    await api.delete("delete-node", {id});
+    processNodes();
+  }*/
+
   async function CreateNewNode(event: FormEvent) {
     event.preventDefault();
     if (!newNode.trim()) {
@@ -245,10 +184,21 @@ export function TreeHome() {
             onClick={(event) => {
               event.stopPropagation();
               setIdP(itemConfig.id);
-              //onRemoveButtonClick(itemConfig);
+              //onRemoveButtonClick();
             }}
           >
             <FontAwesomeIcon icon={faUserSlash} />
+          </button>
+          <button
+            key="3"
+            className="StyledButton"
+            onClick={(event) => {
+              event.stopPropagation();
+              setIdP(itemConfig.id);
+              
+            }}
+          >
+            <FontAwesomeIcon icon={faEnvelopeOpen} />
           </button>
         </>
       );
@@ -288,13 +238,18 @@ export function TreeHome() {
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Nome</Form.Label>
+              <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="name"
                 autoFocus
                 onChange={(event) => setNewNode(event.target.value)}
               />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+              <Form.Label>Content</Form.Label>
+              <Form.Control as="textarea" placeholder= "content" rows={3} 
+                onChange={(event) => setContent(event.target.value)} />
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -309,7 +264,7 @@ export function TreeHome() {
       </Modal>
       <Modal show={show} onHide={handleCloseP}>
         <Modal.Header closeButton>
-          <Modal.Title>Adding a new Person to the Tree</Modal.Title>
+          <Modal.Title>Adding a new Person to the Tree with Parent</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -319,8 +274,13 @@ export function TreeHome() {
                 type="text"
                 placeholder="name"
                 autoFocus
-                onChange={(event) => setNewNodeP(event.target.value)}
+                onChange={(event) => setNewNode(event.target.value)}
               />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+              <Form.Label>Content</Form.Label>
+              <Form.Control as="textarea" placeholder= "content" rows={3} 
+                onChange={(event) => setContent(event.target.value)} />
             </Form.Group>
           </Form>
         </Modal.Body>
