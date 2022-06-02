@@ -6,14 +6,10 @@ import FormControl from "react-bootstrap/FormControl";
 import Navbar from "react-bootstrap/Navbar";
 import { OrgDiagram, FamDiagram } from "basicprimitivesreact";
 import Container from "react-bootstrap/Container";
-import { PageFitMode, Enabled, GroupByType, LCA, Tree } from "basicprimitives";
+import { PageFitMode, Enabled, GroupByType } from "basicprimitives";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUserPlus,
-  faUserSlash,
-  faEnvelopeOpen,
-} from "@fortawesome/free-solid-svg-icons";
+import {faUserPlus,faUserSlash,faEnvelopeOpen,faPlus} from "@fortawesome/free-solid-svg-icons";
 
 import logo from "../../assets/person-icon.png";
 import { NavDropdown, Modal } from "react-bootstrap";
@@ -31,6 +27,15 @@ var photos = {
     "5tEv7a5A5jL0tcN7vNl9OVcHqtXRbocVr+Kc9k3H/3qPL69Ise7dh0SsS+2JmtFddgvdy/gGbY7Jdp2GRcyrlu1BfUjxt" +
     "iPRm/lqVbGHOMHnU39zQm0I/UbBLA+GVosJHGVrcoWkgEktnoLydYXkF/LiXG21MwAAAAASUVORK5CYII=",
 };
+/*<button
+            key="3"
+            className="StyledButton"
+            onClick={(event) => {
+              event.stopPropagation();
+              setIdP(itemConfig.id);
+              handleShowC();
+            }}
+          ></button>*/
 
 type NodeDB = {
   id: string;
@@ -38,23 +43,27 @@ type NodeDB = {
   parents: NodeDB[];
   children: NodeDB[];
 };
+let tree : NodeDB[] =[];
 
 export function TreeHome() {
+ 
   const [search, setSearch] = useState("");
   const [show, setShow] = useState(false);
   const [showP, setShowP] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
   const handleCloseP = () => setShowP(false);
   const handleShowP = () => setShowP(true);
   const [idP, setIdP] = useState("");
   const [newNode, setNewNode] = useState("");
   const [firstRun, setFirstRun] = useState(true);
-  const [content, setContent] = useState("");
-
+  const [content, setContent] = useState(""); 
   const [nodes, setNodes] = useState([]);
+  const [showC, setShowC] = useState(false);
+  const handleCloseC = () => setShowC(false);
+  const handleShowC = () => setShowC(true);
+  const [parent, setParent] = useState("");
+
   if (firstRun) {
     SelectNodes();
     setFirstRun(false);
@@ -77,15 +86,11 @@ export function TreeHome() {
     handleCloseP();
   }
 
-  async function onRemoveButtonClick() {
-    var id = idP;
-    //console.log(id);
+  async function onRemoveButtonClick(id: string ) {
     await api.post("delete-node", { id });
     processNodes();
   }
-
   async function CreateNewNode(event: FormEvent) {
-    //console.log("AQUI");
     event.preventDefault();
     if (!newNode.trim()) {
       return;
@@ -94,11 +99,15 @@ export function TreeHome() {
     processNodes();
     handleClose();
   }
+  function CreateNewParent(){
+    api.put("link-parent",{id:idP, parent});
+    processNodes();
+  }
   function processNodes() {
     api
       .get<NodeDB[]>("nodes")
       .then((response) => {
-        let tree = response.data;
+        tree = response.data;
         let nodes = [];
         for (var i = 0; i < tree.length; i++) {
           var p = tree[i].parents;
@@ -140,15 +149,16 @@ export function TreeHome() {
       }
     return result;
   }
+
   function AddChilds(nodes: NodeDB[], name: String) {
     var result = [];
     for (var i = 0; i < nodes.length; i++) {
       var parChild = nodes[i].parents;
       for (var k = 0; k < parChild.length; k++) {
-        if (search == parChild[k].name) {
+        if (name == parChild[k].name) {
           result.push({
             id: nodes[k].id,
-            parents: search,
+            parents: name,
             title: nodes[k].name,
             image: logo,
           });
@@ -157,6 +167,8 @@ export function TreeHome() {
     }
     return result;
   }
+
+ 
   function SelectNodes() {
     if (search == "") {
       processNodes();
@@ -166,11 +178,7 @@ export function TreeHome() {
         var newNodes = [];
         for (var i = 0; i < tree.length; i++) {
           var node = tree[i];
-          console.log(node.name);
-          console.log(search);
-
           if (node.name == search) {
-            console.log("HERE");
 
             let par = node.parents;
             let parents = [];
@@ -186,7 +194,6 @@ export function TreeHome() {
             newNodes.push(AddChilds(tree, search));
           }
         }
-        console.log(newNodes);
         setNodes(newNodes);
       });
     }
@@ -227,25 +234,24 @@ export function TreeHome() {
             className="StyledButton"
             onClick={(event) => {
               event.stopPropagation();
-              //console.log(itemConfig);
-
-              setIdP(itemConfig.id);
-              // console.log(idP);
-              onRemoveButtonClick();
+              onRemoveButtonClick(itemConfig.id);
             }}
           >
             <FontAwesomeIcon icon={faUserSlash} />
           </button>
           <button
-            key="3"
+            key="4"
             className="StyledButton"
             onClick={(event) => {
               event.stopPropagation();
+              console.log(tree);
               setIdP(itemConfig.id);
+              handleShowC();
             }}
           >
-            <FontAwesomeIcon icon={faEnvelopeOpen} />
+            <FontAwesomeIcon icon={faPlus} />
           </button>
+          
         </>
       );
     },
@@ -356,6 +362,26 @@ export function TreeHome() {
           </Button>
           <Button variant="primary" onClick={CreateNewNodeP}>
             Add New Person
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showC} onHide={handleCloseC}>
+        <Modal.Header closeButton>
+          <Modal.Title>Adding a new child to the parent</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <Form.Control as="select" onChange={(event) => setParent(event.target.value)}>
+            {tree.map(opt => (
+              <option key = {opt.id} value={opt.id}>{opt.name}</option>
+            ))}
+        </Form.Control>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseC}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={CreateNewParent}>
+            Add Parent
           </Button>
         </Modal.Footer>
       </Modal>
