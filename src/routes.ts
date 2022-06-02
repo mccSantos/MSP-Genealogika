@@ -13,7 +13,6 @@ import { SendEmailController } from "./controllers/SendEmailController";
 import { TicketCreateController } from "./controllers/TicketCreateController";
 import { validateToken } from "./middleware/Authenticate";
 
-
 const router = Router();
 
 router.post("/register", new RegisterController().handle);
@@ -25,7 +24,7 @@ router.post("/login", new LoginController().handle);
 
 router.get("/tickets", validateToken, new GetTicketsController().handle);
 
-router.get("/tickets-by-subject", new GetTicketsBySubjectController().handle);
+router.post("/tickets-by-subject", new GetTicketsBySubjectController().handle);
 
 router.post("/create-node", new NodeAddController().handle);
 
