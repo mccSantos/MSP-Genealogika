@@ -31,20 +31,22 @@ export function DnaAnalysis() {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.text}>
-        The DNA analysis is not real, we just send you an email saying that we
-        will send you a package. Since this is just a prototype.
-      </div>
+    <div>
+      <div className={styles.wrapper}>
+        <div className={styles.text}>
+          The DNA analysis is not real, we just send you an email saying that we
+          will send you a package. Since this is just a prototype.
+        </div>
 
-      <Button
-        variant="success"
-        type="submit"
-        className={styles.btn}
-        onClick={handleDnaAnalysis}
-      >
-        Ask for DNA analysis!
-      </Button>
+        <Button
+          variant="success"
+          type="submit"
+          className={styles.btn}
+          onClick={handleDnaAnalysis}
+        >
+          Ask for DNA analysis!
+        </Button>
+      </div>
     </div>
   );
 }
