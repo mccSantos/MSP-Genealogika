@@ -60,11 +60,11 @@ export function Forum() {
       });
   });
 
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIxQGVtYWlsLmVtYWlsIiwiaWQiOiIxOTM0ZjA0MS0wZTFkLTQwYzctOTczOC0xODFhYzE5NTdjYzciLCJpYXQiOjE2NTM5NDUzMzN9.E19UtxJ0Bghy8F0igvkWZVN1o3zweEFHjgAPjHuhJz4";
+  //const token =
+  // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIxQGVtYWlsLmVtYWlsIiwiaWQiOiIxOTM0ZjA0MS0wZTFkLTQwYzctOTczOC0xODFhYzE5NTdjYzciLCJpYXQiOjE2NTM5NDUzMzN9.E19UtxJ0Bghy8F0igvkWZVN1o3zweEFHjgAPjHuhJz4";
 
   async function getId() {
-    await api.post("id-from-token", { token }).then((response) => {
+    await api.post("id-from-token", {}).then((response) => {
       setUser(response.data);
     });
   }

@@ -1,5 +1,5 @@
 import { api } from "../../services/api";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, SSRProvider } from "react-bootstrap";
 import styles from "./styles.module.scss";
 import { FormEvent, useState } from "react";
 export function TimeCapsule() {
@@ -7,20 +7,36 @@ export function TimeCapsule() {
   const [spirit, setSpirit] = useState("");
   const [animal, setAnimal] = useState("");
   const [number, setNumber] = useState("");
+  const [user, setUser] = useState<User>();
+  const [user_id, setUserId] = useState("");
 
   const subject = "Cápsula do Tempo Genealogika";
+
+  type User = {
+    id: string;
+    name: string;
+    email: string;
+    password: string;
+  };
 
   async function handleTimeCapsule(event: FormEvent) {
     event.preventDefault();
 
-    const userId = await api.get("id-from-token", {});
+    await api.post("id-from-token", {}).then((response) => {
+      console.log(response.data);
+      setUserId(response.data);
+      console.log(user_id);
+    });
 
-    const receiverEmail = await api.post("user-email", { user_id: userId });
-
+    await api.post<User>("users", { user_id }).then((response) => {
+      console.log(response.data);
+      setUser(response.data);
+    });
+    const email = user.email;
     const body = `Olá aqui está a tua Cápsula do Tempo.\n\nCor preferida: ${color}\nAnimal Espiritual: ${spirit}\nAnimal Preferido: ${animal}\nNúmero Preferido: ${number}\n\n\nGenealogika`;
 
     await api.post("email", {
-      receiverEmail,
+      receiverEmail: email,
       subject,
       body,
     });
@@ -88,7 +104,12 @@ export function TimeCapsule() {
           />
         </Form.Group>
 
-        <Button variant="primary" type="submit" className={styles.formButton}>
+        <Button
+          variant="primary"
+          type="submit"
+          className={styles.formButton}
+          onClick={handleTimeCapsule}
+        >
           Submit
         </Button>
       </Form>
