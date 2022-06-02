@@ -15,8 +15,10 @@ import {
   faEnvelopeOpen,
 } from "@fortawesome/free-solid-svg-icons";
 
-import logo from "../../assets/Genealogika_logo.png";
+import logo from "../../assets/person-icon.png";
 import { NavDropdown, Modal } from "react-bootstrap";
+
+import styles from "./styles.module.scss";
 
 var photos = {
   a:
@@ -266,11 +268,17 @@ export function TreeHome() {
               type="button"
               onClick={SelectNodes}
               variant="outline-success"
+              className={styles.botao}
             >
               Search
             </Button>
           </Form>
-          <Button type="button" onClick={handleShow} variant="success">
+          <Button
+            type="button"
+            onClick={handleShow}
+            variant="success"
+            className={styles.botao}
+          >
             Add
           </Button>
         </Container>

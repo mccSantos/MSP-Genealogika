@@ -35,13 +35,15 @@ export function Home() {
 
   return (
     <div className={styles.navbar}>
-      <a href="/">
+      <a href="/" className={styles.logo}>
         <img src={logo} alt="Genealogika" />
       </a>
       <a href="Tree">Tree</a>
       <a href="Forum">Forum</a>
       <a href="Help">Help</a>
-      <a href="TimeCapsule">Cápsula do Tempo</a>
+      <a href="TimeCapsule">Time Capsule</a>
+      <a href="DnaAnalysis">Dna Analysis</a>
+
       <a
         href="Login"
         className={styles.right}

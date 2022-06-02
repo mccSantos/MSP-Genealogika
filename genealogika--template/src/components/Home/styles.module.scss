@@ -66,9 +66,9 @@ input {
 
   img {
     display: inline;
-    margin-left: auto;
-    margin-right: auto;
-    height: 3vw;
+    margin: auto;
+
+    //height: 3vw;
   }
 }
 
@@ -80,11 +80,16 @@ input {
   text-align: center; /* Center the text */
   padding: 14px 20px; /* Add some padding */
   text-decoration: none; /* Remove underline */
+  height: 3vw;
 }
 
 /* Right-aligned link */
 .navbar a.right {
   float: right; /* Float a link to the right */
+}
+
+.navbar a.logo {
+  padding: 0;
 }
 
 /* Change color on hover/mouse-over */
