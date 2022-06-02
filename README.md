@@ -1,5 +1,5 @@
 # MSP-Genealogika
-
+Protótipo de uma webapp para a visualização de árvores genealógicas. Feito no âmbito da cadeira de MSP(Modelação de sistemas e processos.
 ## A instalar:
 
 - Intalar o node
