@@ -7,14 +7,14 @@ class SendEmailService {
       port: "465",
       secure: true,
       auth: {
-        user: "genealogika@sapo.pt",
+        user: "msp.genealogika@sapo.pt",
         pass: "12##MSPGenealogika",
       },
     });
 
     transporter
       .sendMail({
-        from: '"Genealogika" <genealogika@sapo.pt>', // sender address
+        from: '"Genealogika" <msp.genealogika@sapo.pt>', // sender address
         to: receiverEmail, // list of receivers
         subject: subject, // Subject line
         text: body, // plain text body

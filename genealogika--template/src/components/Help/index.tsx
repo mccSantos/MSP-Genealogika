@@ -5,7 +5,7 @@ import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function Help() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const navigateHome = () => {
     navigate("/");
@@ -27,11 +27,11 @@ export function Help() {
     let response = await api.post("id-from-token", {});
 
     response = await api.post<User>("users", response.data);
-  
+
     const email = response.data.email;
     const body = `Help.\n\nAsk: ${content}\n From:\n ${email} \n`;
 
-    await api.post("email", {
+    await api.post("email-receiver", {
       subject,
       body,
     });
@@ -44,7 +44,7 @@ export function Help() {
         <Form.Group className={styles.formInput} controlId="formBasicFavColor">
           <Form.Label>Ask Support</Form.Label>
           <Form.Control
-            as ="textarea"
+            as="textarea"
             placeholder="Content"
             onChange={(event) => setContent(event.target.value)}
             value={content}
@@ -56,7 +56,7 @@ export function Help() {
             //</Form.Text>
           }
         </Form.Group>
-        
+
         <Button
           variant="primary"
           type="submit"
