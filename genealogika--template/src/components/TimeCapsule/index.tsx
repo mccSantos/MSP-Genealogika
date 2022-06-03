@@ -15,8 +15,6 @@ export function TimeCapsule() {
   const [spirit, setSpirit] = useState("");
   const [animal, setAnimal] = useState("");
   const [number, setNumber] = useState("");
-  const [user, setUser] = useState<User>();
-  const [user_id, setUserId] = useState("");
 
   const subject = "Cápsula do Tempo Genealogika";
 
@@ -32,7 +30,7 @@ export function TimeCapsule() {
 
     let response = await api.post("id-from-token", {});
 
-    response = await api.post<User>("users", response.data);
+    response = await api.post<User>("users", { user: response.data });
     console.log(response.data);
     const email = response.data.email;
     const body = `Olá aqui está a tua Cápsula do Tempo.\n\nCor preferida: ${color}\nAnimal Espiritual: ${spirit}\nAnimal Preferido: ${animal}\nNúmero Preferido: ${number}\n\n\nGenealogika`;

@@ -26,7 +26,7 @@ export function DnaAnalysis() {
 
     let response = await api.post("id-from-token", {});
 
-    response = await api.post<User>("users", response.data);
+    response = await api.post<User>("users", { user: response.data });
     console.log(response.data);
     const email = response.data.email;
     const body = `Hello ${response.data.name},\n We have received your order!In a few days you will receive a package in your home with everything you need to find yourself\n Hope you enjoy it!\n\n\n Best Regards,\n Genealogika`;
